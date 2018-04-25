@@ -1,0 +1,40 @@
+config/db.php
+config/params.php
+config/web.php
+commands/ImportController.php
+models/site/User.php
+commands/RbacController.php
+web/uploads/dhcp_conf
+web/assets/*
+# phpstorm project files
+.idea
+
+# netbeans project files
+nbproject
+
+.php_cs.cache
+
+# zend studio for eclipse project files
+.buildpath
+.project
+.settings
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+composer.phar
+
+# Mac DS_Store Files
+.DS_Store
+
+# phpunit itself is not needed
+phpunit.phar
+# local phpunit config
+/phpunit.xml
+
+tests/_output/*
+tests/_support/_generated

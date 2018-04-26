@@ -88,7 +88,7 @@ class InetController extends Controller
           } else {
             Yii::$app->session['inetparams'] = $filter;
         }
-        
+
         $dataProvider = $searchModel->search($filter);
         $dataProvider->pagination->pageSizeLimit =[1, 1000000];
         $dataProvider->pagination->defaultPageSize = 1000000;
@@ -265,7 +265,57 @@ class InetController extends Controller
             return $response;
         }   
     }    
+    
+    public function actionSms()
+    {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post('id');
+            $clients = Inet::find()->joinWith(['client'])->where(['inet.id' => $id])->asArray()->all();
+            $phones = array();
+            foreach ($clients as $item) {
+                if (!empty($item['client']['phone_1']) && !in_array($item['client']['phone_1'], $phones)) {
+                    $phones[] = $item['client']['phone_1'];
+                }
+                if (!empty($item['client']['phone_2']) && !in_array($item['client']['phone_2'], $phones)) {
+                    $phones[] = $item['client']['phone_2'];
+                }
+            }
+            $content = $this->getPhoneFile($phones);
+            $fileName = 'uploads/sms-' . date("Y-m-d-H-i-s") . '.txt';
+            file_put_contents($fileName, $content);
+            Yii::$app->session['fileName'] = $fileName;           
+        } else {
+            $fileName = Yii::$app->session['fileName'];
+            unset(Yii::$app->session['fileName']);
+            if (!empty($fileName) && file_exists($fileName)) {
+                Yii::$app->response->sendFile($fileName);
+                unlink($fileName);
+            } else {
+                return $this->redirect('index');
+            }
+        }
+        
+    }
+    
+    public function getPhoneFile(array $phones)
+    {
+        $file = '';
+        if (is_array($phones)) {
+            foreach ($phones as $phone) {
+                $phone = trim($phone);
+                str_replace('/\D/', '', $phone);
+                $phone = '+38' . $phone;
+                if (strlen($phone) == 13) {
+                    $file .= $phone . "\n";
+                }
+            }
+            return $file;
+        } else {
+            return false;
+        }
+    }
 
+    
     /**
      * Finds the Inet model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

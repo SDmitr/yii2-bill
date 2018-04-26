@@ -35,6 +35,13 @@ $pageSize = PageSize::widget([
                         ]
                     ]);
 ?>
+<div class="row" style="margin-bottom: 0px;">
+    <div class="col-xs-12" align="right">
+        <div id="sms" class="btn btn-info">
+            <span class="glyphicon glyphicon-phone" data-pjax="0" ></span> Рассылка
+        </div>
+    </div>
+</div>
 <div class="inet-index">
 <?php Pjax::begin(['timeout' => 60000, 'enablePushState' => false]);?>
     <?= GridView::widget([
@@ -48,6 +55,9 @@ $pageSize = PageSize::widget([
                 }
             },
         'columns' => [
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+             ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',   
@@ -140,3 +150,7 @@ $pageSize = PageSize::widget([
     ]); ?>
 <?php Pjax::end(); ?>
 </div>
+
+<?php
+    $this->registerJsFile('@web/js/phone-list.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>

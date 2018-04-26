@@ -35,16 +35,17 @@ $pageSize = PageSize::widget([
                         ]
                     ]);
 ?>
-<div class="row" style="margin-bottom: 0px;">
-    <div class="col-xs-12" align="right">
-        <div id="sms" class="btn btn-info">
-            <span class="glyphicon glyphicon-phone" data-pjax="0" ></span> Рассылка
+<div class="row" style="margin-bottom: 10px;">
+    <div class="col-xs-12">
+        <div id="sms" class="btn btn-info" style="display: none;">
+            <span class="glyphicon glyphicon-save" data-pjax="0" ></span> Файл SMS-рассылки
         </div>
     </div>
 </div>
 <div class="inet-index">
 <?php Pjax::begin(['timeout' => 60000, 'enablePushState' => false]);?>
     <?= GridView::widget([
+        'id' => 'grid',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'filterSelector' => 'select[name="per-page"]',

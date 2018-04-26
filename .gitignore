@@ -4,7 +4,7 @@ config/web.php
 commands/ImportController.php
 models/site/User.php
 commands/RbacController.php
-web/uploads/dhcp_conf
+web/uploads/*
 web/assets/*
 # phpstorm project files
 .idea

@@ -152,5 +152,5 @@ $pageSize = PageSize::widget([
 </div>
 
 <?php
-    $this->registerJsFile('@web/js/phone-list.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+    $this->registerJsFile('@web/js/get-phone.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

@@ -10,14 +10,19 @@ use yii\base\Model;
  */
 class ContactForm extends Model
 {
-    public $name = 'Eliton';
-    public $email = 'support@eliton.org.ua';
+    public $name;
+    public $email;
     public $subject;
     public $body;
     public $verifyCode;
 
 
-    /**
+    public function __construct($config = array()) {
+        $this->name = $config['name'];
+        $this->email = $config['supportEmail'];
+    }
+
+        /**
      * @return array the validation rules.
      */
     public function rules()

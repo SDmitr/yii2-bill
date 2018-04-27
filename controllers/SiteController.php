@@ -121,7 +121,11 @@ class SiteController extends Controller
      */
     public function actionContact()
     {
-        $model = new ContactForm();
+        $config = array(
+            'name' => Yii::$app->params['name'],
+            'supportEmail' => Yii::$app->params['supportEmail']
+        );
+        $model = new ContactForm($config);
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
 

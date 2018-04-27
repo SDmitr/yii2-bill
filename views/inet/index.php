@@ -37,7 +37,7 @@ $pageSize = PageSize::widget([
 ?>
 <div class="row" style="margin-bottom: 10px;">
     <div class="col-xs-12">
-        <div id="sms" class="btn btn-info" style="display: none;">
+        <div id="sms" class="btn btn-primary" style="display: none;">
             <span class="glyphicon glyphicon-save" data-pjax="0" ></span> Файл SMS-рассылки
         </div>
     </div>

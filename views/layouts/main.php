@@ -104,7 +104,7 @@ if (!Yii::$app->user->isGuest):
     
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; ТРК "Элитон" <?= date('Y') ?></p>
+        <p class="pull-left">&copy; <?= Yii::$app->params['name'] ?> <?= date('Y') ?></p>
         <p class="pull-right">Powered by SDmitriy</p>
         <!--<p class="pull-right"><?= Yii::powered() ?></p>-->
     </div>

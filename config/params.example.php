@@ -9,6 +9,20 @@ return [
         'mask' => '255.255.255.0',
         'snmpCommunity' => 'public',
     ],
+    'DHCP' => [
+        'domainName' => 'Example',
+        'dnsPrimary' => '8.8.8.8',
+        'dnsSecondary' => '8.8.4.4',
+        'defaultLeaseTime' => 21600,
+        'maxLeaseTime' => 43200,
+        'sharedNetwork' => [
+            'name' => 'VLAN',
+            'subnet' => '10.0.255.248',
+            'netmask' => '255.255.255.248',
+            'firstIp' => '10.0.255.249',
+            'lastIp' => '10.0.255.254',
+        ],
+    ],
     'telnetSettings' => [
         'port' => 23,
         'length' => 1024,

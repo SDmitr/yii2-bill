@@ -3,10 +3,10 @@
 <?= str_repeat('#', 32) ?>
 
 
-option domain-name "Eliton";
-option domain-name-servers 8.8.8.8, 91.220.204.253;
-default-lease-time 21600;
-max-lease-time 43200;
+option domain-name "<?= Yii::$app->params['DHCP']['domainName'] ?>";
+option domain-name-servers <?= Yii::$app->params['DHCP']['dnsPrimary'] ?>, <?= Yii::$app->params['DHCP']['dnsSecondary'] ?>;
+default-lease-time <?= Yii::$app->params['DHCP']['defaultLeaseTime'] ?>;
+max-lease-time <?= Yii::$app->params['DHCP']['maxLeaseTime'] ?>;
 
 ddns-update-style none;
 deny unknown-clients;
@@ -29,9 +29,9 @@ shared-network SUBNET_<?= $subnet->id ?> {
 }
 <?php endforeach; ?>
 
-shared-network VLAN2 {
-    subnet 172.16.255.248 netmask 255.255.255.248 {
-        range 172.16.255.249 172.16.255.254;
+shared-network <?= Yii::$app->params['DHCP']['sharedNetwork']['name'] ?> {
+    subnet <?= Yii::$app->params['DHCP']['sharedNetwork']['subnet'] ?> netmask <?= Yii::$app->params['DHCP']['sharedNetwork']['netmask'] ?> {
+        range <?= Yii::$app->params['DHCP']['sharedNetwork']['firstIp'] ?> <?= Yii::$app->params['DHCP']['sharedNetwork']['lastIp'] ?>;
     }
 }
 

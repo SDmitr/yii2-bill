@@ -89,7 +89,7 @@ class PonController extends Controller {
         $first_ip = ip2long($subnet) + 14;
         $last_ip = ip2long($broadcast) - 170;
         
-        for ($ip = $first_ip; $ip <= ip2long('192.168.0.79'); $ip++ ) {
+        for ($ip = $first_ip; $ip <= ip2long('192.168.0.100'); $ip++ ) {
             try {
                 $session = new SNMP(SNMP::VERSION_2c, long2ip($ip), Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
                 $sysdescr = @$session->get("1.3.6.1.2.1.1.1.0");
@@ -100,7 +100,6 @@ class PonController extends Controller {
                 if ($session->getError())  throw new \Exception ($session->getError());
                 echo long2ip($ip) . " производитель " . self::getModel($sysdescr) . " название " . $hostname . " кол-во портов " . $ports . "<br>";
 
-//                var_dump($this->getModel($sysdescr));
             } catch (\Exception $e) {
                 echo $e->getMessage() . "<br>";
             }
@@ -112,6 +111,8 @@ class PonController extends Controller {
         if (strpos($sysdescr, 'ES')) return 'Edge-core';
         if (strpos($sysdescr, 'Huawei')) return 'Huawei';
         if (strpos($sysdescr, 'S62')) return 'Foxgate';
+        if (strpos($sysdescr, 'Cisco')) return 'Cisco';
+        if (strpos($sysdescr, 'ROS')) return 'ROS';
         
         return 'Unknown';
     }

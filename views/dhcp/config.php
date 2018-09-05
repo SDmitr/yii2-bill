@@ -5,6 +5,9 @@
 
 option domain-name "<?= Yii::$app->params['DHCP']['domainName'] ?>";
 option domain-name-servers <?= Yii::$app->params['DHCP']['dnsPrimary'] ?>, <?= Yii::$app->params['DHCP']['dnsSecondary'] ?>;
+option netbios-name-servers <?= Yii::$app->params['DHCP']['dnsSecondary'] ?>;
+option netbios-node-type 8;
+
 default-lease-time <?= Yii::$app->params['DHCP']['defaultLeaseTime'] ?>;
 max-lease-time <?= Yii::$app->params['DHCP']['maxLeaseTime'] ?>;
 

@@ -2,6 +2,10 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+use yii\grid\GridView;
+use yii\data\ActiveDataProvider;
+use app\models\TarifTv;
 use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
@@ -95,6 +99,35 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    
+       
+    
+    <p>  
+        <?= Html::a('<span class="glyphicon glyphicon-plus"></span> Добавить подключение Tv', ['tv/create', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
+    </p>
+    <?php Pjax::begin(['timeout' => 60000, 'enablePushState' => false ]);?>
+        <?= GridView::widget([
+            'dataProvider' => new ActiveDataProvider(['query' => $model->getTv()]),
+            'columns' => [
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'template' => '{view}',
+                    'controller' => 'tv',
+                ],
+                [
+                    'attribute' => 'tarif_id',
+                    'filter' => TarifTv::find()->select(['name', 'id'])->indexBy('id')->column(),
+                    'value' => 'tarif.name'
+                ],
+                [
+                    'attribute' => 'status_id',
+                    'value' => 'status.name',
+                    'options' => ['style' => 'width:130px;'],
+                ],
+                'date_create',
+            ],
+        ]); ?>
+    <?php Pjax::end(); ?>   
 </div>
 
 <?php

@@ -15,6 +15,7 @@ class m170215_071424_tv extends Migration
             'date_off' => $this->dateTime(),
             'date_create' => $this->dateTime(),
         ]);
+        $this->createIndex('idx_unique_inet_id_tarif_id', '{{%tv}}', ['inet_id', 'tarif_id'], true);
         $this->addForeignKey('fk-tv-inet', '{{%tv}}', 'inet_id', '{{%inet}}', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk-tv-tarif_tv', '{{%tv}}', 'tarif_id', '{{%tarif_tv}}', 'id', 'SET NULL', 'CASCADE');
         $this->addForeignKey('fk-tv-status', '{{%tv}}', 'status_id', '{{%status}}', 'id', 'SET NULL', 'CASCADE');

@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
 use app\models\Tv;
 use app\models\search\TvSearch;
+use app\models\site\Log;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,6 +22,21 @@ class TvController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                
+                'rules' => [
+                    [
+                        'actions' => ['login'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -62,17 +79,29 @@ class TvController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($id = null)
     {
         $model = new Tv();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model->inet_id = $id;
+        $model->date_create = date("Y-m-d H:i:s");       
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if( $model->save()) {
+                $log = new Log();
+                $log->add('Подключение ТВ добавлено', Log::CREATE, Log::SUCCESS, $model);                
+                return $this->redirect(['inet/view', 'id' => $id]);
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        
+        
     }
 
     /**
@@ -104,9 +133,10 @@ class TvController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        $inetId = $model->inet->id;
+        $model->delete();
+        return $this->redirect(['inet/view', 'id' => $inetId]);
     }
 
     /**

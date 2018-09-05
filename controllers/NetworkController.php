@@ -24,7 +24,7 @@ class NetworkController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                
+
                 'rules' => [
                     [
                         'actions' => ['login'],
@@ -179,7 +179,7 @@ class NetworkController extends Controller
             }
         }
         
-        if ($id == 1) {
+        if ($id == 1 || $id == 7) {
             $response['pon'] = true;
         }
         echo json_encode($response);

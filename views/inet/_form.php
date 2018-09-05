@@ -25,7 +25,7 @@ use yii\widgets\Pjax;
         </div>
         <?php if($model->isNewRecord): ?>
             <div class="col-md-6">
-                <?= $form->field($networks, 'name')->dropDownList(Network::find()->select(['name', 'id'])->indexBy('id')->orderBy('id')->column(), [
+                <?= $form->field($networks, 'name')->dropDownList(Network::find()->select(['name', 'id'])->indexBy('id')->orderBy('name')->column(), [
                     'prompt' => 'Выберите локацию',
                     'options' => [
                          $networks->name => [
@@ -38,7 +38,7 @@ use yii\widgets\Pjax;
         <?php endif; ?>
         <?php if(!$model->isNewRecord): ?>
             <div class="col-md-6">
-                <?= $form->field($networks, 'name')->dropDownList(Network::find()->select(['name', 'id'])->indexBy('id')->orderBy('id')->column(), [
+                <?= $form->field($networks, 'name')->dropDownList(Network::find()->select(['name', 'id'])->indexBy('id')->orderBy('name')->column(), [
                     'prompt' => 'Выберите локацию',
                     'options' => [
                          $networkId => [
@@ -88,11 +88,6 @@ use yii\widgets\Pjax;
             <?= $form->field($model, 'date_create')->textInput(['class' => 'form-control ', 'readonly' => true]) ?>
         </div>
     </div>
-<!--    <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($model, 'tarif_id')->inline()->checkboxList(['2' => 'tar_1', '1' => 'tar_2', '3' => 'tar_3']) ?>
-        </div>
-    </div>-->
     <?= $form->field($model, 'aton', ['template' => "{input}"])->hiddenInput(['readonly' => true])->label(false) ?>
     
     <div class="row-1">

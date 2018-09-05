@@ -107,6 +107,14 @@ class Inet extends \yii\db\ActiveRecord
         return $this->hasOne(TarifInet::className(), ['id' => 'tarif_id']);
     }
     
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTv()
+    {
+        return $this->hasMany(Tv::className(), ['inet_id' => 'id']);
+    }
+    
     use \dixonstarter\togglecolumn\ToggleActionTrait;
     public function getToggleItems()
     {
@@ -138,23 +146,25 @@ class Inet extends \yii\db\ActiveRecord
     
     public function beforeSave($insert)
     {
-        $mikrotik = Yii::$app->params['Mikrotik'];
-        $api = new RouterosAPI();
-        if ($api->connect($mikrotik['address'], $mikrotik['login'], $mikrotik['password']) && empty($insert)) {
-            $isPresent = true;
-            while ($isPresent) {
-                $result = $api->comm('/ip/firewall/address-list/print');
-                foreach ($result as $item) {
-                    if (($item['address'] == $this->oldAttributes['ip'] || $item['address'] == $this->oldAttributes['ip']) && $item['list'] != $mikrotik['blacklist']) {
-                        $api->comm('/ip/firewall/address-list/remove', array('.id' => $item['.id']));
-                        $isPresent = true;
-                        break;
-                    } else {
-                        $isPresent = false;
+        if (Yii::$app->controller->id != 'interface') {
+            $mikrotik = Yii::$app->params['Mikrotik'];
+            $api = new RouterosAPI();
+            if ($api->connect($mikrotik['address'], $mikrotik['login'], $mikrotik['password']) && empty($insert)) {
+                $isPresent = true;
+                while ($isPresent) {
+                    $result = $api->comm('/ip/firewall/address-list/print');
+                    foreach ($result as $item) {
+                        if (($item['address'] == $this->oldAttributes['ip'] || $item['address'] == $this->oldAttributes['ip']) && $item['list'] != $mikrotik['blacklist']) {
+                            $api->comm('/ip/firewall/address-list/remove', array('.id' => $item['.id']));
+                            $isPresent = true;
+                            break;
+                        } else {
+                            $isPresent = false;
+                        }
                     }
                 }
+                $api->disconnect();
             }
-            $api->disconnect();
         }
         
         if (parent::beforeSave($insert)) {
@@ -165,26 +175,28 @@ class Inet extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        $mikrotik = Yii::$app->params['Mikrotik'];
-        $api = new RouterosAPI();
-        if ($api->connect($mikrotik['address'], $mikrotik['login'], $mikrotik['password'])) {
-            $api->comm('/ip/firewall/address-list/add', array('list' => $this->status->list, 'address' => $this->ip, 'comment' => 'user ' . $this->num));
-            $api->comm('/ip/firewall/address-list/add', array('list' => $this->tarif->speed . 'M', 'address' => $this->ip, 'comment' => 'user ' . $this->num));
-            $api->disconnect();
-        }
-        
-        if (Yii::$app->controller->id != 'import') {
-            if (isset($changedAttributes['ip']) || isset($changedAttributes['mac']) || $insert) {
-                $dhcp = \Yii::$app->runAction('dhcp/create');
+        if (Yii::$app->controller->id != 'interface') {
+            $mikrotik = Yii::$app->params['Mikrotik'];
+            $api = new RouterosAPI();
+            if ($api->connect($mikrotik['address'], $mikrotik['login'], $mikrotik['password'])) {
+                $api->comm('/ip/firewall/address-list/add', array('list' => $this->status->list, 'address' => $this->ip, 'comment' => 'user ' . $this->num));
+                $api->comm('/ip/firewall/address-list/add', array('list' => $this->tarif->speed . 'M', 'address' => $this->ip, 'comment' => 'user ' . $this->num));
+                $api->disconnect();
             }
-        }
-        
-        if (isset($changedAttributes['status_id']) && count($changedAttributes) == 1) {
-            $log = new Log();
-            if ($this->status_id == 1) {
-                $log->add('Подключение включено', Log::ENABLE, Log::SUCCESS, $this);     
-            } elseif ($this->status_id == 2) {
-                $log->add('Подключение выключено', Log::DISABLE, Log::DANGER, $this);
+
+            if (Yii::$app->controller->id != 'import') {
+                if (isset($changedAttributes['ip']) || isset($changedAttributes['mac']) || $insert) {
+                    $dhcp = \Yii::$app->runAction('dhcp/create');
+                }
+            }
+
+            if (isset($changedAttributes['status_id']) && count($changedAttributes) == 1) {
+                $log = new Log();
+                if ($this->status_id == 1) {
+                    $log->add('Подключение включено', Log::ENABLE, Log::SUCCESS, $this);
+                } elseif ($this->status_id == 2) {
+                    $log->add('Подключение выключено', Log::DISABLE, Log::DANGER, $this);
+                }
             }
         }
         

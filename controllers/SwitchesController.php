@@ -4,18 +4,16 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-//use app\models\Client;
-//use app\models\search\ClientSearch;
-//use app\models\site\Log;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\commands\PonController;
+use app\models\Inet;
+use app\commands\SwitchController as SwitchCommand;
 
 /**
  * ClientController implements the CRUD actions for Client model.
  */
-class SwitchController extends Controller
+class SwitchesController extends Controller
 {
     /**
      * @inheritdoc
@@ -71,8 +69,10 @@ class SwitchController extends Controller
      */
     public function actionIndex()
     {
-        $switch = PonController::actionTest();
-//        $switch->actionTest();
+        $fdb = file_get_contents('uploads/fdb');
+        var_dump(unserialize($fdb));
+        die();
+        $switch = SwitchCommand::actionIndex();
     }
 
     /**
@@ -82,12 +82,82 @@ class SwitchController extends Controller
      */
     public function actionView($id)
     {
+//        $start = microtime(true);
+//        $inet = Inet::findOne($id);
+//
+//        if($inet) {
+//            $mac = explode(':', $inet->mac);
+//
+//            $macDec = array();
+//            foreach ($mac as $octet) {
+//                $macDec[] = hexdec($octet);
+//            }
+//
+//            $macString = implode('.', $macDec);
+//
+//            $fdb = file_get_contents('uploads/fdb');
+//            $macTable = unserialize($fdb);
+//
+//            $result = array();
+//            foreach ($macTable as $switch => $table) {
+//                $isFind = false;
+//
+//                foreach ($table as $oid => $iface) {
+//                    if (strpos($oid, '.' . $macString)) {
+//                        $iface = preg_replace('/\D/', '', $iface);
+//
+//                        $isFind = true;
+//                        $result = array(
+//                            'switch' => $switch,
+//                            'interface' => $iface
+//                        );
+//                    }
+//                }
+//                if ($isFind == true) {
+//                    break;
+//                }
+//            }
+//
+//            if (!empty($result) && $isFind == true) {
+//                $inet->switch = $result['switch'];
+//                $inet->interface = $result['interface'];
+//
+//                $inet->save();
+//            }
+//        }
+//
+//        $stop = microtime(true);
+//
+//        echo 'Execute time: ' . date('H:i:s', ($stop - $start));
+
+        die('false');
 
         $model = $this->findModel($id);
                 
         return $this->render('view', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Displays a single Client model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionFdb()
+    {
+        $start = time();
+
+        $result = SwitchCommand::actionFdb();
+
+        print_r($result);
+        echo '<br>';
+
+        $stop = time();
+
+        echo 'start ' . $start . '<br>';
+        echo 'stop ' . $stop . '<br>';
+        echo 'Execute time: ' . date('H:i:s', ($stop - $start));
     }
 
     /**

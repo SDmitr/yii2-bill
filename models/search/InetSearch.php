@@ -47,7 +47,7 @@ class InetSearch extends Inet
      */
     public function search($params)
     {
-        $query = Inet::find()->joinWith(['client', 'tarif', 'status']);
+        $query = Inet::find()->joinWith(['client', 'tarif', 'status', 'tv']);
 
         // add conditions that should always apply here
 

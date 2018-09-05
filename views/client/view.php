@@ -1,6 +1,5 @@
 <?php
 use app\models\TarifInet;
-use app\models\TarifTv;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -131,7 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'date_create',
             ],
         ]); ?>
-    <?php Pjax::end(); ?>    
+    <?php Pjax::end(); ?>
 </div>
 <?php
     $this->registerJsFile('@web/js/get-arp.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

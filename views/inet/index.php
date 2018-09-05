@@ -1,6 +1,7 @@
 <?php
 use app\models\Client;
 use app\models\TarifInet;
+use app\models\Switches;
 use app\models\Status;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -86,7 +87,20 @@ $pageSize = PageSize::widget([
             ],
             'ip',
             'mac',
-            'switch',
+            [
+                'attribute' => 'switch',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $switch = Switches::findOne(array('ip' => $model->switch));
+
+                    $title = '';
+                    if(!empty($switch->name)) {
+                        $title = $switch->name;
+                    }
+
+                    return Html::a(Html::encode($model->switch), Url::to(['switches/view', 'id' => $model->switch]), ['title' => $title ], ['data-pjax' => 0]);
+                },
+            ],
             'interface',
             [
                 'attribute' => 'onu_mac',

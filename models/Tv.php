@@ -52,11 +52,11 @@ class Tv extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'inet_id' => 'Inet ID',
-            'tarif_id' => 'Tarif ID',
-            'status_id' => 'Status ID',
+            'tarif_id' => 'Тариф',
+            'status_id' => 'Статус',
             'date_on' => 'Date On',
             'date_off' => 'Date Off',
-            'date_create' => 'Date Create',
+            'date_create' => 'Дата создания',
         ];
     }
 

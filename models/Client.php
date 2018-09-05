@@ -79,12 +79,4 @@ class Client extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Money::className(), ['num' => 'num']);
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTv()
-    {
-        return $this->hasOne(Tv::className(), ['num' => 'num']);
-    }
 }

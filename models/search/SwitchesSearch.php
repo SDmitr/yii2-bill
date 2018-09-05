@@ -5,24 +5,21 @@ namespace app\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Tv;
+use app\models\Switches;
 
 /**
- * TvSearch represents the model behind the search form of `app\models\Tv`.
+ * SwitchesSearch represents the model behind the search form about `app\models\Switches`.
  */
-class TvSearch extends Tv
+class SwitchesSearch extends Switches
 {
-    public $num;
-    
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'inet_id', 'tarif_id', 'status_id'], 'integer'],
-            [['date_on', 'date_off', 'date_create'], 'safe'],
-            [['num'], 'safe'],
+            [['id'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -44,7 +41,7 @@ class TvSearch extends Tv
      */
     public function search($params)
     {
-        $query = Tv::find()->joinWith(['inet', 'tarif', 'status']);
+        $query = Switches::find();
 
         // add conditions that should always apply here
 
@@ -52,12 +49,7 @@ class TvSearch extends Tv
             'query' => $query,
 //            'pagination' => [
 //                'pagesize' => 10,
-//            ],
-            'sort'=> [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ]
+//            ]
         ]);
 
         $this->load($params);
@@ -70,17 +62,10 @@ class TvSearch extends Tv
 
         // grid filtering conditions
         $query->andFilterWhere([
-            '{{%tv}}.id' => $this->id,
-            '{{%tv}}.inet_id' => $this->inet_id,
-            '{{%tv}}.tarif_id' => $this->tarif_id,
-            '{{%tv}}.status_id' => $this->status_id,
-            '{{%tv}}.date_on' => $this->date_on,
-            '{{%tv}}.date_off' => $this->date_off,
-            '{{%tv}}.date_create' => $this->date_create,
+            'id' => $this->id,
         ]);
-        
-        $query->andFilterWhere(['like', '{{%inet}}.num', $this->num])
-            ->andFilterWhere(['like', '{{%tv}}.date_create', $this->date_create]);
+
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

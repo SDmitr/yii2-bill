@@ -17,7 +17,7 @@ class SwitchController extends Controller {
         $mask = $devices['mask'];
         $broadcast = long2ip(ip2long($subnet) | ~ip2long($mask)) ;
 
-        $first_ip = ip2long($subnet) + 10;
+        $first_ip = ip2long($subnet) + 11;
         $last_ip = ip2long($broadcast) - 170;
         
         for ($address = $first_ip; $address <= ip2long('192.168.0.150'); $address++ ) {

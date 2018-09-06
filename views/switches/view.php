@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 $this->title = $model->ip;
-$width = 80 / (count($interfacesStatus) / 2) - 3;
 ?>
 
 <div class="switches-view">
@@ -20,8 +19,7 @@ $width = 80 / (count($interfacesStatus) / 2) - 3;
         'model' => $model,
         'attributes' => [
             'name',
-            'vendor',
-            'interface_count'
+            'vendor'
         ],
     ]) ?>
 
@@ -29,22 +27,25 @@ $width = 80 / (count($interfacesStatus) / 2) - 3;
         <div class="row">
             <?php $i = 1 ?>
             <?php foreach ($interfacesStatus as $id => $item): ?>
-                <?php if ($i % 2 != 0): ?>
+                <?php if ($i % 2 != 0 || count($interfacesStatus) <= 12): ?>
                     <?php $status = ($item == 1) ? 'active' : '' ?>
-                    <div class="interface <?= $status ?>" style="width: <?= $width ?>%;"><?= $i ?></div>
+                    <div class="interface <?= $status ?>"<?= $i ?></div>
                 <?php endif; ?>
                 <?php $i++ ?>
             <?php endforeach; ?>
         </div>
-        <div class="row">
-            <?php $i = 1 ?>
-            <?php foreach ($interfacesStatus as $id => $item): ?>
-                <?php if ($i % 2 == 0): ?>
-                    <?php $color = ($item == 1) ? 'active' : '' ?>
-                    <div class="interface <?= $status ?>" style="width: <?= $width ?>%;"><?= $i ?></div>
-                <?php endif; ?>
-                <?php $i++ ?>
-            <?php endforeach; ?>
-        </div>
+
+        <?php if (count($interfacesStatus) > 12): ?>
+            <div class="row">
+                <?php $i = 1 ?>
+                <?php foreach ($interfacesStatus as $id => $item): ?>
+                    <?php if ($i % 2 == 0): ?>
+                        <?php $color = ($item == 1) ? 'active' : '' ?>
+                        <div class="interface <?= $status ?>"<?= $i ?></div>
+                    <?php endif; ?>
+                    <?php $i++ ?>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

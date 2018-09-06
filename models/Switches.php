@@ -13,8 +13,7 @@ use \SNMP;
  * @property string $vendor
  * @property string $oid
  * @property string $ip
- * @property string $interface_count
- * @property string $interface_status
+ * @property string $interfaces
  * @property string $fdb
  *
  * @property Switches[] $switches
@@ -64,8 +63,7 @@ class Switches extends \yii\db\ActiveRecord
             'vendor' => 'Производитель',
             'oid' => 'OID',
             'ip' => 'IP-адрес',
-            'interface_count' => 'Количество портов',
-            'interface_status' => 'Статус портов',
+            'interfaces' => 'Интерфейсы',
             'fdb' => 'MAC-таблица',
         ];
     }
@@ -145,7 +143,6 @@ class Switches extends \yii\db\ActiveRecord
         $session->close();
         return $result;
     }
-
 
     public function getVendor()
     {

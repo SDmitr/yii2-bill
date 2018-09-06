@@ -12,8 +12,7 @@ class m170215_071335_switches extends Migration
             'vendor' => $this->string()->notNull(),
             'oid' => $this->string(),
             'ip' => $this->string()->notNull()->unique(),
-            'interface_count' => $this->integer()->notNull(),
-            'interface_status' => $this->text(),
+            'interfaces' => $this->text(),
             'fdb' => $this->text(),
         ]);
         $this->createIndex('idx-switch-ip', '{{%switches}}', 'ip');

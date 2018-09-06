@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Switches;
 use Yii;
+use \SNMP;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

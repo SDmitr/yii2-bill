@@ -22,6 +22,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
         'css/spinner.css',
         'css/navbar.css',
+        'css/switch.css',
     ];
     public $js = [
     ];

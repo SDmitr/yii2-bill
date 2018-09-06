@@ -80,11 +80,11 @@ class SwitchesController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $interfaces = $model->getInterfaces();
+        $interfacesStatus = $model->getInterfacesStatus();
                 
         return $this->render('view', [
             'model' => $model,
-            'interfaces' => $interfaces
+            'interfacesStatus' => $interfacesStatus
         ]);
     }
 

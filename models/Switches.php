@@ -89,25 +89,18 @@ class Switches extends \yii\db\ActiveRecord
     public function getInterfacesStatus()
     {
         $result = array();
-        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 1000000, 1);
+        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
-        $interfaces = @$session->walk('1.3.6.1.2.1.2.2.1.3');
-
-        if ($session->getError()) throw new \Exception ($session->getError());
+        $interfaces = unserialize($this->interfaces);
 
         if (!empty($interfaces))
         {
-            foreach ($interfaces as $oid => $interface)
+            foreach ($interfaces as $id => $name)
             {
-                $components = explode('.', $oid);
-                $id = array_pop($components);
-                $interfaceType = preg_replace('/\D/', '', $interface);
-                if ($interfaceType == 6)
-                {
-                    $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
-                    $interfaceStatus = preg_replace('/\D/', '', $status);
-                    $result[$id] = $interfaceStatus;
-                }
+                $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
+                if ($session->getError()) throw new \Exception ($session->getError());
+                $interfaceStatus = preg_replace('/\D/', '', $status);
+                $result[$id] = $interfaceStatus;
             }
         }
 

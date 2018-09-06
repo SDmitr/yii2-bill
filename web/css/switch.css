@@ -1,0 +1,36 @@
+.switches-view.row
+{
+    margin-bottom: 20px;
+}
+
+.switches-view.device
+{
+    background-color: #546873;
+    margin-right: unset;
+    margin-left: unset;
+    width: 75vw;
+    height: 7vw;
+    font-size: 1vw;
+}
+
+.switches-view.device.row
+{
+    margin-right: unset;
+    margin-left: unset;
+    height: 30%;
+    margin: 1vw;
+}
+
+.switches-view.device.row.interface
+{
+    margin-right: 1vw;
+    float: left;
+    text-align: center;
+    height: 100%;
+    background-color: #b6c6b6
+}
+
+.switches-view.device.row.interface .active
+{
+    background-color: #25ec25
+}

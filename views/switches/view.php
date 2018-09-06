@@ -32,13 +32,11 @@ $this->title = $model->ip;
                 <?php if ($i % 2 != 0 || count($interfacesStatus) <= 12): ?>
                     <?php $status = ($item == 1) ? 'active' : '' ?>
                     <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
-                    <div class="interface <?= $status ?>">
-                        <?php if($inet !== null): ?>
-                            <?= Html::a(Html::encode($i), Url::to(['inet/view', 'id' => $inet->id]), ['title' => $inet->client->name ], ['data-pjax' => 0]) ?>
-                        <?php else: ?>
-                            <?= $i ?>
-                        <?php endif; ?>
-                    </div>
+                    <?php if($inet !== null): ?>
+                        <?= Html::a('<div class="interface ' . $status . '">' . Html::encode($i) . '</div>', Url::to(['inet/view', 'id' => $inet->id]), ['title' => $inet->client->name ], ['data-pjax' => 0]) ?>
+                    <?php else: ?>
+                        <?= '<div class="interface ' . $status . '">' . Html::encode($i) . '</div>' ?>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <?php $i++ ?>
             <?php endforeach; ?>
@@ -51,13 +49,11 @@ $this->title = $model->ip;
                     <?php if ($i % 2 == 0): ?>
                         <?php $status = ($item == 1) ? 'active' : '' ?>
                         <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
-                        <div class="interface <?= $status ?>">
-                            <?php if($inet !== null): ?>
-                                <?= Html::a(Html::encode($i), Url::to(['inet/view', 'id' => $inet->id]), ['title' => $inet->client->name ], ['data-pjax' => 0]) ?>
-                            <?php else: ?>
-                                <?= $i ?>
-                            <?php endif; ?>
-                        </div>
+                        <?php if($inet !== null): ?>
+                            <?= Html::a('<div class="interface ' . $status . '">' . Html::encode($i) . '</div>', Url::to(['inet/view', 'id' => $inet->id]), ['title' => $inet->client->name ], ['data-pjax' => 0]) ?>
+                        <?php else: ?>
+                            <?= '<div class="interface ' . $status . '">' . Html::encode($i) . '</div>' ?>
+                        <?php endif; ?>
                     <?php endif; ?>
                     <?php $i++ ?>
                 <?php endforeach; ?>

@@ -6,6 +6,7 @@
 .switches-view .device
 {
     background-color: #546873;
+    border-radius: 5px;
     margin-right: unset;
     margin-left: unset;
     width: 75vw;
@@ -15,8 +16,6 @@
 
 .switches-view .device .row
 {
-    margin-right: unset;
-    margin-left: unset;
     height: 30%;
     margin: 1vw;
 }
@@ -27,11 +26,15 @@
     float: left;
     text-align: center;
     height: 100%;
-    background-color: #b6c6b6;
+    background-color: #1f1f1f;
+    border-color: #151515;
+    border-radius: 4px;
+    color: #ffffff;
     width: 4vw;
 }
 
 .switches-view .device .row .interface.active
 {
-    background-color: #25ec25
+    background-color: #5cb85c;
+    border-color: #4cae4c;
 }

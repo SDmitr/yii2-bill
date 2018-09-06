@@ -29,7 +29,7 @@ $this->title = $model->ip;
             <?php foreach ($interfacesStatus as $id => $item): ?>
                 <?php if ($i % 2 != 0 || count($interfacesStatus) <= 12): ?>
                     <?php $status = ($item == 1) ? 'active' : '' ?>
-                    <div class="interface <?= $status ?>"<?= $i ?></div>
+                    <div class="interface <?= $status ?>"><?= $i ?></div>
                 <?php endif; ?>
                 <?php $i++ ?>
             <?php endforeach; ?>
@@ -41,7 +41,7 @@ $this->title = $model->ip;
                 <?php foreach ($interfacesStatus as $id => $item): ?>
                     <?php if ($i % 2 == 0): ?>
                         <?php $color = ($item == 1) ? 'active' : '' ?>
-                        <div class="interface <?= $status ?>"<?= $i ?></div>
+                        <div class="interface <?= $status ?>"><?= $i ?></div>
                     <?php endif; ?>
                     <?php $i++ ?>
                 <?php endforeach; ?>

@@ -98,7 +98,19 @@ $pageSize = PageSize::widget([
                     return false;
                 },
             ],
-            'interface',
+            [
+                'attribute' => 'interface',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $switch = Switches::findOne($model->switch);
+                    if($switch !== null) {
+                        $interfaces = unserialize($switch->interfaces);
+                        $interfaceName = isset($interfaces[$model->interface]) ? $interfaces[$model->interface] : '';
+                        return $interfaceName;
+                    }
+                    return false;
+                },
+            ],
             [
                 'attribute' => 'onu_mac',
                 'format' => 'raw',

@@ -93,7 +93,7 @@ $pageSize = PageSize::widget([
                 'value' => function ($model) {
                     $switch = Switches::findOne($model->switch);
                     if($switch !== null) {
-                        return Html::a(Html::encode($switch->ip), Url::to(['switches/view', 'id' => $switch->id]), ['title' => $switch->name ], ['data-pjax' => 0]);
+                        return Html::a(Html::encode($switch->ip), Url::to(['switches/view', 'id' => $switch->id]), ['title' => $switch->name , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']);
                     }
                     return false;
                 },

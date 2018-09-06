@@ -11,7 +11,7 @@ $this->title = $model->ip;
 <div class="switches-view">
     <div class="row">
         <div class="col-xs-3 col-sm-1">
-            <?= Html::a('<span class="glyphicon glyphicon-chevron-left"></span> Назад', ['index'], ['class' => 'btn btn-warning']) ?>
+            <?= Html::a('<span class="glyphicon glyphicon-chevron-left"></span> Назад', ['inet/index'], ['class' => 'btn btn-warning']) ?>
         </div>
         <div  class="col-xs-9 col-sm-10">
             <h3 style="margin: 0 auto; text-align: center;"><?= Html::encode($this->title) ?></h3>

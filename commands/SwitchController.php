@@ -8,9 +8,6 @@ use app\models\Switches;
 
 class SwitchController extends Controller {
 
-    private $ip;
-
-
     public function actionUpdate() {
 
         $start = time();
@@ -42,7 +39,7 @@ class SwitchController extends Controller {
                 $switch->fdb = serialize($fdb);
 
                 $switch->save();
-                echo $ip . " производитель " . $switch->vendor . " название " . $switch->name . " кол-во портов " . $switch->interface_count . "\n";
+                echo $ip . " производитель " . $switch->vendor . " название " . $switch->name . " кол-во портов " . $switch->interfaces . "\n";
             } catch (\Exception $e) {
                 $switch->delete();
                 echo $e->getMessage() . "\n";

@@ -105,7 +105,7 @@ $pageSize = PageSize::widget([
                     $switch = Switches::findOne($model->switch);
                     if($switch !== null) {
                         $interfaces = unserialize($switch->interfaces);
-                        $interfaceName = isset($interfaces[$model->interface]) ? $interfaces[$model->interface] : '';
+                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
                         return $interfaceName;
                     }
                     return false;

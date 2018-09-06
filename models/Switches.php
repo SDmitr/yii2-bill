@@ -95,12 +95,14 @@ class Switches extends \yii\db\ActiveRecord
 
         if (!empty($interfaces))
         {
-            foreach ($interfaces as $id => $name)
+            foreach ($interfaces as $id => $item)
             {
-                $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
-                if ($session->getError()) throw new \Exception ($session->getError());
-                $interfaceStatus = preg_replace('/\D/', '', $status);
-                $result[$id] = $interfaceStatus;
+                if ($item['type'] == 6) {
+                    $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
+                    if ($session->getError()) throw new \Exception ($session->getError());
+                    $interfaceStatus = preg_replace('/\D/', '', $status);
+                    $result[$id] = $interfaceStatus;
+                }
             }
         }
 

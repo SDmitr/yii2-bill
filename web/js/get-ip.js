@@ -18,14 +18,8 @@ $(document).ready(function () {
                     $("#inet-ip").prop("value", data["ip"]);
                     $("#inet-aton").prop("value", data["aton"]);
                     if (data["pon"]){
-                        $("#inet-switch").val('');
-                        $("#inet-interface").val('');
-                        $("#inet-switch").parent().parent().prop("hidden", true);
-                        $("#inet-interface").parent().parent().prop("hidden", true);
                         $("#inet-onu_mac").parent().parent().prop("hidden", false);
                     } else {
-                        $("#inet-switch").parent().parent().prop("hidden", false);
-                        $("#inet-interface").parent().parent().prop("hidden", false);
                         $("#inet-onu_mac").parent().parent().prop("hidden", true);
                         $("#inet-onu_mac").val('');
                     }

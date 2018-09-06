@@ -6,6 +6,7 @@ use yii\widgets\Pjax;
 use yii\grid\GridView;
 use yii\data\ActiveDataProvider;
 use app\models\TarifTv;
+use app\models\Switches;
 use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
@@ -79,8 +80,30 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'ip',
             'mac',
-            'switch',
-            'interface',
+            [
+                'attribute' => 'switch',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $switch = Switches::findOne($model->switch);
+                    if($switch !== null) {
+                        return Html::a(Html::encode($switch->ip), Url::to(['switches/view', 'id' => $switch->id]), ['title' => $switch->name ], ['data-pjax' => 0]);
+                    }
+                    return false;
+                },
+            ],
+            [
+                'attribute' => 'interface',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $switch = Switches::findOne($model->switch);
+                    if($switch !== null) {
+                        $interfaces = unserialize($switch->interfaces);
+                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
+                        return $interfaceName;
+                    }
+                    return false;
+                },
+            ],
             [
                 'attribute' => 'onu_mac',
                 'format' => 'raw',
@@ -99,9 +122,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    
-       
-    
     <p>  
         <?= Html::a('<span class="glyphicon glyphicon-plus"></span> Добавить подключение Tv', ['tv/create', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
     </p>

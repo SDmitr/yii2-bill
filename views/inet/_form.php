@@ -74,14 +74,6 @@ use yii\widgets\Pjax;
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, 'switch')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'interface')->textInput(['maxlength' => true]) ?>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
             <?= $form->field($model, 'onu_mac')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-6">

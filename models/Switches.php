@@ -106,7 +106,7 @@ class Switches extends \yii\db\ActiveRecord
                 {
                     $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
                     $interfaceStatus = preg_replace('/\D/', '', $status);
-                    $result[$id]['status'] = $interfaceStatus;
+                    $result[$id] = $interfaceStatus;
                 }
             }
         }
@@ -135,7 +135,7 @@ class Switches extends \yii\db\ActiveRecord
                 {
                     $name = @$session->get('1.3.6.1.2.1.2.2.1.2.' . $id);
                     preg_match('~\w+\:\s\"(.+)\"~', $name, $interfaceName);
-                    $result[$id]['name'] = !empty($interfaceName[1]) ? $interfaceName[1] : $id;
+                    $result[$id] = !empty($interfaceName[1]) ? $interfaceName[1] : $id;
                 }
             }
         }

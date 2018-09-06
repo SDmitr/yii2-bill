@@ -9,15 +9,15 @@ use app\models\Inet;
 
 class InterfaceController extends Controller {
 
-    public $switches = array();
+    private $switches = array();
 
     public function actionUpdate() {
         $inets = Inet::find()->all();
         $this->switches = Switches::find()->all();
 
-        try {
-            foreach ($inets as $inet)
-            {
+        foreach ($inets as $inet)
+        {
+            try {
                 if (!empty($inet->mac))
                 {
                     $mac = strtolower(str_replace(':', '', $inet->mac));
@@ -25,20 +25,26 @@ class InterfaceController extends Controller {
 
                     if (count($switch) == 2)
                     {
-                        $inet->switch = $switch['ip'];
+                        $inet->switch = $switch['id'];
                         $inet->interface = $switch['interface'];
-                        $inet->save();
 
-                        echo 'Inet: ' . $inet->id . ' mac: ' . $inet->mac . ' switch: ' . $switch['ip'] . ' interface: ' . $switch['interface']. "\n";
+                        if ($inet->save())
+                        {
+                            echo 'Inet: ' . $inet->id . ' mac: ' . $inet->mac . ' switch: ' . $switch['id'] . ' interface: ' . $switch['interface'] . "\n";
+                        } else {
+
+                            $error = array_values($inet->getFirstErrors());
+                            throw new \Exception ($error[0]);
+                        }
                     }
                 }
+            } catch (\Exception $e) {
+                echo $e->getMessage() . "\n";
             }
-        } catch (\Exception $e) {
-            echo $e->getMessage() . "\n";
         }
     }
 
-    public function getSwitch($mac)
+    private function getSwitch($mac)
     {
         $isFound = false;
         $result = array();
@@ -50,7 +56,7 @@ class InterfaceController extends Controller {
             {
                 if ($mac == $key && $this->getCount($macTable, $value) <= 2)
                 {
-                    $result['ip'] = $switch->ip;
+                    $result['id'] = $switch->id;
                     $result['interface'] = $value;
                     $isFound = true;
                 }
@@ -64,7 +70,7 @@ class InterfaceController extends Controller {
         return $result;
     }
 
-    public function getCount($macTable, $interface)
+    private function getCount($macTable, $interface)
     {
         $result = 0;
         foreach ($macTable as $key => $value)

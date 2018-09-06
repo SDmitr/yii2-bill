@@ -14,7 +14,7 @@ use app\models\site\Log;
  * @property integer $aton
  * @property string $mac
  * @property string $comment
- * @property string $switch
+ * @property integer $switch
  * @property string $interface
  * @property integer $tarif_id
  * @property integer $status_id
@@ -45,9 +45,9 @@ class Inet extends \yii\db\ActiveRecord
     {
         return [
             [['num', 'ip', 'aton', 'mac'], 'required'],
-            [['num', 'aton', 'tarif_id', 'status_id'], 'integer'],
+            [['num', 'aton', 'switch', 'tarif_id', 'status_id'], 'integer'],
             [['date_on', 'date_off', 'date_create'], 'safe'],
-            [['ip', 'mac', 'comment', 'switch', 'interface'], 'string', 'max' => 255],
+            [['ip', 'mac', 'comment', 'interface'], 'string', 'max' => 255],
             [['ip'], 'unique'],
             [['aton'], 'unique'],
             ['ip', 'validateIp'],

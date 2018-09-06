@@ -13,7 +13,7 @@ class m170215_071431_inet extends Migration
             'aton' => $this->bigInteger()->notNull()->unique(),
             'mac' => $this->string()->notNull()->unique(),
             'comment' => $this->string(),
-            'switch' => $this->string(),
+            'switch' => $this->integer(),
             'interface' => $this->string(),
             'tarif_id' => $this->integer(),
             'status_id' => $this->integer(),

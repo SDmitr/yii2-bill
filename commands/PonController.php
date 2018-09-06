@@ -116,6 +116,10 @@ class PonController extends Controller {
         
         return 'Unknown';
     }
-    
+
+    public function actionClear()
+    {
+        Pon::deleteAll('date < DATE_SUB(NOW(), INTERVAL 90 DAY)');
+    }
 }
 

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Switches;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -69,10 +70,11 @@ class SwitchesController extends Controller
      */
     public function actionIndex()
     {
-        $fdb = file_get_contents('uploads/fdb');
-        var_dump(unserialize($fdb));
-        die();
-        $switch = SwitchCommand::actionIndex();
+//        $fdb = file_get_contents('uploads/fdb');
+//        var_dump(unserialize($fdb));
+//        die();
+//        $switch = SwitchCommand::actionIndex();
+        die('test');
     }
 
     /**
@@ -82,60 +84,12 @@ class SwitchesController extends Controller
      */
     public function actionView($id)
     {
-//        $start = microtime(true);
-//        $inet = Inet::findOne($id);
-//
-//        if($inet) {
-//            $mac = explode(':', $inet->mac);
-//
-//            $macDec = array();
-//            foreach ($mac as $octet) {
-//                $macDec[] = hexdec($octet);
-//            }
-//
-//            $macString = implode('.', $macDec);
-//
-//            $fdb = file_get_contents('uploads/fdb');
-//            $macTable = unserialize($fdb);
-//
-//            $result = array();
-//            foreach ($macTable as $switch => $table) {
-//                $isFind = false;
-//
-//                foreach ($table as $oid => $iface) {
-//                    if (strpos($oid, '.' . $macString)) {
-//                        $iface = preg_replace('/\D/', '', $iface);
-//
-//                        $isFind = true;
-//                        $result = array(
-//                            'switch' => $switch,
-//                            'interface' => $iface
-//                        );
-//                    }
-//                }
-//                if ($isFind == true) {
-//                    break;
-//                }
-//            }
-//
-//            if (!empty($result) && $isFind == true) {
-//                $inet->switch = $result['switch'];
-//                $inet->interface = $result['interface'];
-//
-//                $inet->save();
-//            }
-//        }
-//
-//        $stop = microtime(true);
-//
-//        echo 'Execute time: ' . date('H:i:s', ($stop - $start));
-
-        die('false');
-
         $model = $this->findModel($id);
+        $interfaces = $this->getInterfaces($model->ip);
                 
         return $this->render('view', [
             'model' => $model,
+            'interfaces' => $interfaces
         ]);
     }
 
@@ -144,42 +98,42 @@ class SwitchesController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionFdb()
-    {
-        $start = time();
-
-        $result = SwitchCommand::actionFdb();
-
-        print_r($result);
-        echo '<br>';
-
-        $stop = time();
-
-        echo 'start ' . $start . '<br>';
-        echo 'stop ' . $stop . '<br>';
-        echo 'Execute time: ' . date('H:i:s', ($stop - $start));
-    }
+//    public function actionFdb()
+//    {
+//        $start = time();
+//
+//        $result = SwitchCommand::actionFdb();
+//
+//        print_r($result);
+//        echo '<br>';
+//
+//        $stop = time();
+//
+//        echo 'start ' . $start . '<br>';
+//        echo 'stop ' . $stop . '<br>';
+//        echo 'Execute time: ' . date('H:i:s', ($stop - $start));
+//    }
 
     /**
      * Creates a new Client model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Client();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $log = new Log();
-            $log->add('Пользователь добавлен', 'create', Log::SUCCESS, $model);
-            
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+//    public function actionCreate()
+//    {
+//        $model = new Client();
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            $log = new Log();
+//            $log->add('Пользователь добавлен', 'create', Log::SUCCESS, $model);
+//
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+//            return $this->render('create', [
+//                'model' => $model,
+//            ]);
+//        }
+//    }
 
     /**
      * Updates an existing Client model.
@@ -187,24 +141,24 @@ class SwitchesController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post())) {
-            $log = new Log();
-            if ($model->attributes != $model->oldAttributes) {
-                $log->add('Пользователь изменен', Log::UPDATE, Log::WARNING, $model);
-            }
-            if ($model->save()) {               
-                $log->save();
-            }
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//        if ($model->load(Yii::$app->request->post())) {
+//            $log = new Log();
+//            if ($model->attributes != $model->oldAttributes) {
+//                $log->add('Пользователь изменен', Log::UPDATE, Log::WARNING, $model);
+//            }
+//            if ($model->save()) {
+//                $log->save();
+//            }
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+//            return $this->render('update', [
+//                'model' => $model,
+//            ]);
+//        }
+//    }
 
     /**
      * Deletes an existing Client model.
@@ -212,21 +166,21 @@ class SwitchesController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-        
-        if ($model->inets) {
-            throw new NotFoundHttpException("У данного пользователя есть активные подключения!\nПеред удалением пользователя необходимо удалить подключения!");
-        } else {
-            $log = new Log();
-            $log->add('Пользователь удален', 'delete', Log::DANGER, $model);
-            $model->delete();
-            $log->save();
-            return $this->redirect(['index']);
-            
-        }
-    }
+//    public function actionDelete($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        if ($model->inets) {
+//            throw new NotFoundHttpException("У данного пользователя есть активные подключения!\nПеред удалением пользователя необходимо удалить подключения!");
+//        } else {
+//            $log = new Log();
+//            $log->add('Пользователь удален', 'delete', Log::DANGER, $model);
+//            $model->delete();
+//            $log->save();
+//            return $this->redirect(['index']);
+//
+//        }
+//    }
 
     /**
      * Finds the Client model based on its primary key value.
@@ -237,11 +191,45 @@ class SwitchesController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Client::findOne($id)) !== null) {
+        if (($model = Switches::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    protected function getInterfaces($ip)
+    {
+        $result = array();
+        $session = new SNMP(SNMP::VERSION_2c, $ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 1000000, 1);
+        $session->oid_increasing_check = false;
+        $interfaces = @$session->walk('1.3.6.1.2.1.2.2.1.3');
+
+        if ($session->getError()) throw new \Exception ($session->getError());
+
+        if (!empty($interfaces))
+        {
+            foreach ($interfaces as $oid => $interface)
+            {
+                $components = explode('.', $oid);
+                $id = array_pop($components);
+                $interfaceType = preg_replace('/\D/', '', $interface);
+                if ($interfaceType == 6)
+                {
+                    $result[$id]['type'] == 6;
+                }
+            }
+        }
+
+        foreach ($result as $id => $value)
+        {
+            $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
+            $interfaceStatus = preg_replace('/\D/', '', $status);
+            $result[$id]['status'] = $interfaceStatus;
+        }
+
+        $session->close();
+        return $result;
     }
 }
 

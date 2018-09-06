@@ -9,8 +9,8 @@ use app\models\Switches;
 
 class SwitchController extends Controller {
 
-    protected $ip;
-    protected $fdbOid = array(
+    private $ip;
+    private $fdbOid = array(
         'Nexthop'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'Foxgate'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'Huawei'        => '1.3.6.1.2.1.17.4.3.1.2',
@@ -65,7 +65,7 @@ class SwitchController extends Controller {
         echo 'Execute time: ' . date('H:i:s', ($stop - $start)) . "\n";
     }
     
-    public function getFdb($vendor)
+    private function getFdb($vendor)
     {
         $result = array();
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
@@ -107,7 +107,7 @@ class SwitchController extends Controller {
         
     }
 
-    public function getInterfaceName($id)
+    private function getInterfaceName($id)
     {
         $name = 'unknown';
         if ($id > 0) {
@@ -126,7 +126,7 @@ class SwitchController extends Controller {
         return $name;
     }
 
-    public function getInterfaces()
+    private function getInterfaces()
     {
         $result = 0;
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 1000000, 1);
@@ -146,7 +146,7 @@ class SwitchController extends Controller {
         return $result;
     }
 
-    public function getSwitchName()
+    private function getSwitchName()
     {
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
@@ -164,7 +164,7 @@ class SwitchController extends Controller {
         return $name;
     }
 
-    public function getVendor()
+    private function getVendor()
     {
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;

@@ -19,6 +19,7 @@ class m170725_153800_pon extends Migration
             'reason' => $this->string(),
             'date' => $this->dateTime(),
         ]);
+        $this->createIndex('idx-pon-date', '{{%pon}}', 'date');
         
 //| update_pon |          | CREATE DEFINER=`billing`@`localhost` TRIGGER `update_pon` AFTER INSERT ON `pon` FOR EACH ROW BEGIN
 // REPLACE INTO `pon_last`

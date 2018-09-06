@@ -53,7 +53,7 @@ $pageSize = PageSize::widget([
         'rowOptions' => function($model) {
                 if ($model->status_id == 2) {
                     return ['class' => 'danger'];
-                    
+
                 }
             },
         'columns' => [
@@ -62,7 +62,7 @@ $pageSize = PageSize::widget([
              ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view}',   
+                'template' => '{view}',
             ],
             'num',
             [
@@ -91,14 +91,11 @@ $pageSize = PageSize::widget([
                 'attribute' => 'switch',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $switch = Switches::findOne(array('ip' => $model->switch));
-
-                    $title = '';
-                    if(!empty($switch->name)) {
-                        $title = $switch->name;
+                    $switch = Switches::findOne($model->switch);
+                    if($switch !== null) {
+                        return Html::a(Html::encode($switch->ip), Url::to(['switches/view', 'id' => $switch->id]), ['title' => $switch->name ], ['data-pjax' => 0]);
                     }
-
-                    return Html::a(Html::encode($model->switch), Url::to(['switches/view', 'id' => $model->switch]), ['title' => $title ], ['data-pjax' => 0]);
+                    return false;
                 },
             ],
             'interface',
@@ -133,7 +130,7 @@ $pageSize = PageSize::widget([
                     'class' => 'form-control',
                     'prompt' => 'Все'
                 ],
-            ] : 
+            ] :
             [
                 'attribute' => 'status_id',
                 'value' => 'status.name',

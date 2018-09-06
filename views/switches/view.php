@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Inet;
 
 $this->title = $model->ip;
 ?>
@@ -29,7 +30,14 @@ $this->title = $model->ip;
             <?php foreach ($interfacesStatus as $id => $item): ?>
                 <?php if ($i % 2 != 0 || count($interfacesStatus) <= 12): ?>
                     <?php $status = ($item == 1) ? 'active' : '' ?>
-                    <div class="interface <?= $status ?>"><?= $i ?></div>
+                    <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
+                    <div class="interface <?= $status ?>">
+                        <?php if($inet !== null): ?>
+                            <?= Html::a(Html::encode($i), Url::to(['inet/view', 'id' => $inet->id]), ['title' => $inet->client->name ], ['data-pjax' => 0]) ?>
+                        <?php else: ?>
+                            <?= $i ?>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
                 <?php $i++ ?>
             <?php endforeach; ?>
@@ -40,8 +48,15 @@ $this->title = $model->ip;
                 <?php $i = 1 ?>
                 <?php foreach ($interfacesStatus as $id => $item): ?>
                     <?php if ($i % 2 == 0): ?>
-                        <?php $color = ($item == 1) ? 'active' : '' ?>
-                        <div class="interface <?= $status ?>"><?= $i ?></div>
+                        <?php $status = ($item == 1) ? 'active' : '' ?>
+                        <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
+                        <div class="interface <?= $status ?>">
+                            <?php if($inet !== null): ?>
+                                <?= Html::a(Html::encode($i), Url::to(['inet/view', 'id' => $inet->id]), ['title' => $inet->client->name ], ['data-pjax' => 0]) ?>
+                            <?php else: ?>
+                                <?= $i ?>
+                            <?php endif; ?>
+                        </div>
                     <?php endif; ?>
                     <?php $i++ ?>
                 <?php endforeach; ?>

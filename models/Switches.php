@@ -6,7 +6,7 @@ use Yii;
 use \SNMP;
 
 /**
- * This is the model class for table "street".
+ * This is the model class for table "switches".
  *
  * @property integer $id
  * @property string $name

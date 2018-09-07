@@ -111,8 +111,12 @@ class Switches extends \yii\db\ActiveRecord
                         $result['status'][$id] = $interfaceStatus;
                         $result['power'] = true;
                     } catch (\Exception $e) {
-                        $result['status'][$id] = self::STATUS_DOWN;
+                        foreach ($interfaces as $id => $item)
+                        {
+                            $result['status'][$id] = self::STATUS_DOWN;
+                        }
                         $result['power'] = false;
+                        break;
                     }
                 }
             }

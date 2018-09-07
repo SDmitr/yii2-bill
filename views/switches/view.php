@@ -6,6 +6,18 @@ use yii\widgets\DetailView;
 use app\models\Inet;
 
 $this->title = $model->ip;
+
+$deviceWidth = '75vw';
+
+if (count($interfacesStatus) <= 12)
+{
+    $deviceWidth = '60vw';
+}
+elseif (count($interfacesStatus) >= 24)
+{
+    $deviceWidth = '77vw';
+}
+
 ?>
 
 <div class="switches-view">
@@ -29,7 +41,7 @@ $this->title = $model->ip;
         ],
     ]) ?>
 
-    <div class="row device">
+    <div class="row device" style="width: <?= $deviceWidth ?>">
         <div class="row">
             <?php $i = 1 ?>
             <?php foreach ($interfacesStatus as $id => $item): ?>
@@ -48,6 +60,7 @@ $this->title = $model->ip;
                 <?php endif; ?>
                 <?php $i++ ?>
             <?php endforeach; ?>
+            <div class="power"></div>
         </div>
         <?php if (count($interfacesStatus) > 12): ?>
             <div class="row">

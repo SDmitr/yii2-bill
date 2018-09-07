@@ -20,6 +20,9 @@ use \SNMP;
  */
 class Switches extends \yii\db\ActiveRecord
 {
+    const STATUS_UP = 1;
+    const STATUS_DOWN = 2;
+
     private $fdbOid = array(
         'Nexthop'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'Foxgate'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
@@ -88,7 +91,10 @@ class Switches extends \yii\db\ActiveRecord
 
     public function getInterfacesStatus()
     {
-        $result = array();
+        $result = array(
+            'status' => array(),
+            'power'  => true
+        );
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $interfaces = unserialize($this->interfaces);
@@ -98,10 +104,16 @@ class Switches extends \yii\db\ActiveRecord
             foreach ($interfaces as $id => $item)
             {
                 if (isset($item['type']) && $item['type'] == 6) {
-                    $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
-                    if ($session->getError()) throw new \Exception ($session->getError());
-                    $interfaceStatus = preg_replace('/\D/', '', $status);
-                    $result[$id] = $interfaceStatus;
+                    try {
+                        $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
+                        if ($session->getError()) throw new \Exception ($session->getError());
+                        $interfaceStatus = preg_replace('/\D/', '', $status);
+                        $result['status'][$id] = $interfaceStatus;
+                        $result['power'] = true;
+                    } catch (\Exception $e) {
+                        $result['status'][$id] = self::STATUS_DOWN;
+                        $result['power'] = false;
+                    }
                 }
             }
         }

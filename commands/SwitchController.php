@@ -29,22 +29,21 @@ class SwitchController extends Controller {
                 {
                     $switch = new Switches();
                     $switch->ip = $ip;
+                    $switch->name = 'Unknown';
+                    $switch->vendor = 'Unknown';
                 }
 
                 $vendor = $switch->getVendor();
-                $fdb = $switch->getFdb($vendor);
+                $switch->interfaces = serialize($switch->getInterfacesName());
                 $switch->name = $switch->getSwitchName();
                 $switch->vendor = $vendor;
-                $switch->interfaces = serialize($switch->getInterfacesName());
+                $fdb = $switch->getFdb($vendor);
                 $switch->fdb = serialize($fdb);
-
+                $switch->status = Switches::STATUS_UP;
                 $switch->save();
                 echo $ip . " производитель " . $switch->vendor . " название " . $switch->name . " кол-во портов " . $switch->interfaces . "\n";
             } catch (\Exception $e) {
-                $switch->name = 'Unknown';
-                $switch->vendor = 'Unknown';
-                $switch->interfaces = serialize(array());
-                $switch->fdb = serialize(array());
+                $switch->status = Switches::STATUS_DOWN;
                 $switch->save();
                 echo $e->getMessage() . "\n";
             }

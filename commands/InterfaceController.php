@@ -54,7 +54,7 @@ class InterfaceController extends Controller {
 
             foreach ($macTable as $key => $value)
             {
-                if ($mac == $key && $this->getCount($macTable, $value) <= 2)
+                if ($mac == $key && $this->getCount($macTable, $value) <= 2 && $switch->status == Switches::STATUS_UP)
                 {
                     $result['id'] = $switch->id;
                     $result['interface'] = $value;

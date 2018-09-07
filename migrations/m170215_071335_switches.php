@@ -14,6 +14,7 @@ class m170215_071335_switches extends Migration
             'ip' => $this->string()->notNull()->unique(),
             'interfaces' => $this->text(),
             'fdb' => $this->text(),
+            'status' => $this->integer()->notNull()
         ]);
         $this->createIndex('idx-switch-ip', '{{%switches}}', 'ip');
 

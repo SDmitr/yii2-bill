@@ -26,11 +26,21 @@
     width: 5vw;
     float: right;
     border-radius: 0.7vw;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
     background-color: #d0cece;
 }
 
+.switches-view .device .row .power i
+{
+    top: 20%;
+    left:20%;
+    font-size: 3vw;
+    color: red;
+}
+
+.switches-view .device .row .power i.active
+{
+    color: green;
+}
 
 .switches-view .device .row .interface
 {

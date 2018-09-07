@@ -60,7 +60,14 @@ elseif (count($interfacesStatus) >= 24)
                 <?php endif; ?>
                 <?php $i++ ?>
             <?php endforeach; ?>
-            <div class="power"></div>
+            <?php if (isset($power) && $power == true): ?>
+                <?php $icon = 'glyphicon-ok-sign'; ?>
+                <?php $active = 'active'; ?>
+            <?php else: ?>
+                <?php $icon = 'glyphicon-alert'; ?>
+                <?php $active = ''; ?>
+            <?php endif; ?>
+            <div class="power"><i class="glyphicon <?= $icon ?> <?= $active ?>" style="top: 20%; left:20% ;font-size: 3vw;"></i></div>
         </div>
         <?php if (count($interfacesStatus) > 12): ?>
             <div class="row">

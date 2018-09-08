@@ -136,7 +136,6 @@ elseif (count($interfacesStatus) >= 24)
                 'attribute' => 'switch',
                 'value' => 'switches.ip',
             ],
-            'interface',
             [
                 'attribute' => 'interface',
                 'format' => 'raw',
@@ -183,5 +182,5 @@ elseif (count($interfacesStatus) >= 24)
 </div>
 
 <?php
-    $this->registerJsFile('@web/js/get-phone.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+    $this->registerJsFile('@web/js/get-arp.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

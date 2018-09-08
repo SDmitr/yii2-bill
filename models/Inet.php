@@ -15,7 +15,7 @@ use app\models\site\Log;
  * @property string $mac
  * @property string $comment
  * @property integer $switch
- * @property string $interface
+ * @property integer $interface
  * @property integer $tarif_id
  * @property integer $status_id
  * @property string $onu_mac
@@ -45,9 +45,9 @@ class Inet extends \yii\db\ActiveRecord
     {
         return [
             [['num', 'ip', 'aton', 'mac'], 'required'],
-            [['num', 'aton', 'switch', 'tarif_id', 'status_id'], 'integer'],
+            [['num', 'aton', 'switch', 'interface', 'tarif_id', 'status_id'], 'integer'],
             [['date_on', 'date_off', 'date_create'], 'safe'],
-            [['ip', 'mac', 'comment', 'interface'], 'string', 'max' => 255],
+            [['ip', 'mac', 'comment'], 'string', 'max' => 255],
             [['ip'], 'unique'],
             [['aton'], 'unique'],
             ['ip', 'validateIp'],
@@ -113,6 +113,14 @@ class Inet extends \yii\db\ActiveRecord
     public function getTv()
     {
         return $this->hasMany(Tv::className(), ['inet_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSwitches()
+    {
+        return $this->hasOne(Switches::className(), ['id' => 'switch']);
     }
     
     use \dixonstarter\togglecolumn\ToggleActionTrait;

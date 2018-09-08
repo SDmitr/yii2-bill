@@ -14,7 +14,7 @@ class m170215_071431_inet extends Migration
             'mac' => $this->string()->notNull()->unique(),
             'comment' => $this->string(),
             'switch' => $this->integer(),
-            'interface' => $this->string(),
+            'interface' => $this->integer(),
             'tarif_id' => $this->integer(),
             'status_id' => $this->integer(),
             'onu_mac' => $this->string(),

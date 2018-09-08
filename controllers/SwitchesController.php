@@ -9,9 +9,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\Inet;
+use yii\data\ActiveDataProvider;
 
 /**
- * ClientController implements the CRUD actions for Client model.
+ * SwitchesController implements the CRUD actions for Switches model.
  */
 class SwitchesController extends Controller
 {
@@ -60,7 +61,7 @@ class SwitchesController extends Controller
     }
     
     /**
-     * Lists all Client models.
+     * Lists all Switches models.
      * @return mixed
      */
     public function actionIndex()
@@ -73,7 +74,7 @@ class SwitchesController extends Controller
     }
 
     /**
-     * Displays a single Client model.
+     * Displays a single Switches model.
      * @param integer $id
      * @return mixed
      */
@@ -81,19 +82,32 @@ class SwitchesController extends Controller
     {
         $model = $this->findModel($id);
         $interfaces = $model->getInterfacesStatus();
+
+        $inetQuery = Inet::find()->where(['switch' => $id]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $inetQuery,
+            'sort' => [
+                'defaultOrder' => [
+                    'interface' => SORT_ASC,
+                ]
+            ],
+        ]);
+        $dataProvider->query->all();
                 
         return $this->render('view', [
             'model' => $model,
             'interfacesStatus' => $interfaces['status'],
-            'power' => $interfaces['power']
+            'power' => $interfaces['power'],
+            'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Finds the Client model based on its primary key value.
+     * Finds the Switches model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Client the loaded model
+     * @return Switches the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)

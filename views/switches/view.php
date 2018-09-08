@@ -1,9 +1,14 @@
 <?php
 
+use app\models\Inet;
+use app\models\TarifInet;
 use yii\helpers\Html;
 use yii\helpers\Url;
+
+use yii\grid\GridView;
+use yii\widgets\Pjax;
 use yii\widgets\DetailView;
-use app\models\Inet;
+use yii\bootstrap\Modal;
 
 $this->title = $model->ip;
 
@@ -19,6 +24,20 @@ elseif (count($interfacesStatus) >= 24)
 }
 
 ?>
+
+<?php Modal::begin([
+    'id' => 'arp-response',
+    'header' => '<h4>Результат ARP-запроса</h4>',
+]) ?>
+<div class="row">
+    <div class="col-xs-6">IP-адрес:</div>
+    <div class="col-xs-6"><span id="ip"></span></div>
+</div>
+<div class="row">
+    <div class="col-xs-6">Состояние:</div>
+    <div class="col-xs-6"><span id="icon"></span> <span id="status"></span></div>
+</div>
+<?php Modal::end(); ?>
 
 <div class="switches-view">
     <div class="row">
@@ -90,4 +109,79 @@ elseif (count($interfacesStatus) >= 24)
             </div>
         <?php endif; ?>
     </div>
+
+    <?php Pjax::begin(['timeout' => 60000, 'enablePushState' => false ]);?>
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}',
+                'controller' => 'inet',
+            ],
+            [
+                'label' => 'ARP',
+                'format' => 'raw',
+                'value' => function ($model) { return Html::a('<span class="glyphicon glyphicon-refresh"></span>', ['inet/arp', 'id' => $model->id], [
+                    'data-toggle' => 'modal',
+                    'data-target' => '#arp-response',
+                ]);
+                },
+                'visible' =>  Yii::$app->user->can('arpInet'),
+            ],
+            'ip',
+            'mac',
+            'comment',
+            [
+                'attribute' => 'switch',
+                'value' => 'switches.ip',
+            ],
+            'interface',
+            [
+                'attribute' => 'interface',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $switch = $model->switches;
+                    if($switch !== null) {
+                        $interfaces = unserialize($switch->interfaces);
+                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
+                        return $interfaceName;
+                    }
+                    return false;
+                },
+            ],
+            [
+                'attribute' => 'onu_mac',
+                'format' => 'raw',
+                'value' => function ($model) { return Html::a(Html::encode($model->onu_mac), Url::to(['pon/view', 'id' => $model->onu_mac ]), ['data-pjax' => 0]); },
+            ],
+            [
+                'attribute' => 'tarif_id',
+                'filter' => TarifInet::find()->select(['name', 'id'])->indexBy('id')->column(),
+                'value' => 'tarif.name'
+            ],
+            Yii::$app->user->can('statusInet') ?
+                [
+                    'class' => '\dixonstarter\togglecolumn\ToggleColumn',
+                    'controller' => 'inet',
+                    'attribute' => 'status_id',
+                    'options' => ['style' => 'width:130px;'],
+                    'linkTemplateOn' => '<a style="width:80px;" class="toggle-column btn btn-primary btn-xs btn-block" data-pjax="0" href="{url}"><i  class="glyphicon glyphicon-ok"></i> {label}</a>',
+                    'linkTemplateOff' => '<a style="width:80px;" class="toggle-column btn btn-danger btn-xs btn-block" data-pjax="0" href="{url}"><i  class="glyphicon glyphicon-remove"></i> {label}</a>',
+                ] :
+                [
+                    'attribute' => 'status_id',
+                    'value' => 'status.name',
+                    'options' => ['style' => 'width:130px;'],
+                ],
+            //            'date_on',
+            //            'date_off',
+            'date_create',
+        ],
+    ]); ?>
+    <?php Pjax::end(); ?>
 </div>
+
+<?php
+    $this->registerJsFile('@web/js/get-phone.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>

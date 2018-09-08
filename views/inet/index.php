@@ -91,9 +91,13 @@ $pageSize = PageSize::widget([
                 'attribute' => 'switch',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $switch = Switches::findOne($model->switch);
+                    $switch = $model->switches;
                     if($switch !== null) {
-                        return Html::a(Html::encode($switch->ip), Url::to(['switches/view', 'id' => $switch->id]), ['title' => $switch->name , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']);
+                        return Html::a(
+                                Html::encode($switch->ip),
+                                Url::to(['switches/view', 'id' => $switch->id]),
+                                ['title' => $switch->name , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
+                        );
                     }
                     return false;
                 },
@@ -102,7 +106,7 @@ $pageSize = PageSize::widget([
                 'attribute' => 'interface',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $switch = Switches::findOne($model->switch);
+                    $switch = $model->switches;
                     if($switch !== null) {
                         $interfaces = unserialize($switch->interfaces);
                         $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
@@ -114,7 +118,13 @@ $pageSize = PageSize::widget([
             [
                 'attribute' => 'onu_mac',
                 'format' => 'raw',
-                'value' => function ($model) { return Html::a(Html::encode($model->onu_mac), Url::to(['pon/view', 'id' => $model->onu_mac ]), ['data-pjax' => 0]); },
+                'value' => function ($model) {
+                    return Html::a(
+                            Html::encode($model->onu_mac),
+                            Url::to(['pon/view', 'id' => $model->onu_mac ]),
+                            ['data-pjax' => 0]
+                    );
+                },
             ],
             [
                 'attribute' => 'tarif_id',
@@ -170,7 +180,7 @@ $pageSize = PageSize::widget([
                 ]),
             ],
         ],
-        'layout' => "<div class='row'><div align='left' class='col-xs-6 form-inline'>" . $pageSize .  "</div><div align='right' class='col-xs-6'>{summary}</div></div><p>{items}<div align='center'>{pager}</div>"
+        'layout' => "<div class='row'><div align='left' class='col-xs-6 form-inline'>" . $pageSize . "</div><div align='right' class='col-xs-6'>{summary}</div></div><p>{items}<div align='center'>{pager}</div>"
     ]); ?>
 <?php Pjax::end(); ?>
 </div>

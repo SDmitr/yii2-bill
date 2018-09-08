@@ -47,7 +47,7 @@ class InetSearch extends Inet
      */
     public function search($params)
     {
-        $query = Inet::find()->joinWith(['client', 'tarif', 'status', 'tv']);
+        $query = Inet::find()->joinWith(['client', 'tarif', 'status', 'tv', 'switches']);
 
         // add conditions that should always apply here
 
@@ -104,6 +104,7 @@ class InetSearch extends Inet
             '{{%inet}}.interface' => $this->interface,
             '{{%inet}}.tarif_id' => $this->tarif_id,
             '{{%inet}}.status_id' => $this->status_id,
+            '{{%inet}}.switch'  => $this->switch
 //            '{{%inet}}.date_on' => $this->date_on,
 //            '{{%inet}}.date_off' => $this->date_off,
 //            '{{%inet}}.date_create' => $this->date_create,
@@ -111,7 +112,7 @@ class InetSearch extends Inet
 
         $query->andFilterWhere(['like', '{{%inet}}.ip', $this->ip])
             ->andFilterWhere(['like', '{{%inet}}.mac', $this->mac])
-            ->andFilterWhere(['like', '{{%inet}}.switch', $this->switch])
+//            ->andFilterWhere(['like', '{{%inet}}.switch', $this->switch])
             ->andFilterWhere(['like', '{{%inet}}.onu_mac', $this->onu_mac])
             ->andFilterWhere(['like', '{{%inet}}.num', $this->num])
             ->andFilterWhere(['like', '{{%inet}}.date_on', $this->date_on])

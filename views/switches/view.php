@@ -66,7 +66,7 @@ elseif (count($interfaces) >= 24)
             <?php foreach ($interfaces as $id => $item): ?>
                 <?php if ($i % 2 != 0 || count($interfaces) <= 12): ?>
                     <?php $status = ($item['status'] == 1) ? 'active' : '' ?>
-                    <?php $adminStatus = ($item['admin_status'] == 2) ? 'shutdown' : '' ?>
+                    <?php $adminStatus = ($item['admin_status'] == 2 && $model->vendor != 'Foxgate') ? 'shutdown' : '' ?>
                     <?php $vlanMode = ($item['vlan_mode'] == 2) ? 'trunk' : '' ?>
                     <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
                     <?php if($inet !== null): ?>
@@ -96,7 +96,7 @@ elseif (count($interfaces) >= 24)
                 <?php foreach ($interfaces as $id => $item): ?>
                     <?php if ($i % 2 == 0): ?>
                         <?php $status = ($item['status'] == 1) ? 'active' : '' ?>
-                        <?php $adminStatus = ($item['admin_status'] == 2) ? 'shutdown' : '' ?>
+                        <?php $adminStatus = ($item['admin_status'] == 2 && $model->vendor != 'Foxgate') ? 'shutdown' : '' ?>
                         <?php $vlanMode = ($item['vlan_mode'] == 2) ? 'trunk' : '' ?>
                         <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
                         <?php if($inet !== null): ?>

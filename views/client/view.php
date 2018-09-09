@@ -99,8 +99,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 'ip',
                 'mac',
                 'comment',
-                'switch',
-                'interface',
+                [
+                    'attribute' => 'switch',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        $switch = $model->switches;
+                        if($switch !== null) {
+                            return Html::a(
+                                    Html::encode($switch->ip),
+                                    Url::to(['switches/view', 'id' => $switch->id]),
+                                    ['title' => $switch->name , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
+                            );
+                        }
+                        return false;
+                    },
+                ],
+                [
+                    'attribute' => 'interface',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        $switch = $model->switches;
+                        if($switch !== null) {
+                            $interfaces = unserialize($switch->interfaces);
+                            $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
+                            return $interfaceName;
+                        }
+                        return false;
+                    },
+                ],
                 [
                     'attribute' => 'onu_mac',
                     'format' => 'raw',

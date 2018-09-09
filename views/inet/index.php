@@ -101,6 +101,7 @@ $pageSize = PageSize::widget([
                     }
                     return false;
                 },
+                'filter' => false
             ],
             [
                 'attribute' => 'interface',
@@ -114,6 +115,7 @@ $pageSize = PageSize::widget([
                     }
                     return false;
                 },
+                'filter' => false
             ],
             [
                 'attribute' => 'onu_mac',

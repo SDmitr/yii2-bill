@@ -16,7 +16,7 @@ $deviceWidth = '75vw';
 
 if (count($interfaces) <= 12)
 {
-    $deviceWidth = '60vw';
+    $deviceWidth = '63vw';
 }
 elseif (count($interfaces) >= 24)
 {

@@ -183,7 +183,7 @@ class Switches extends \yii\db\ActiveRecord
         $session->oid_increasing_check = false;
         $vlan = @$session->get('1.3.6.1.2.1.17.7.1.4.5.1.1.' . $id);
         preg_match('~\w+\:\s(\w+)~', $vlan, $vlanMode);
-        if (isset($vlanMode[1]) && $vlanMode[1] > 1 && $vlanMode[1] != 1000) {
+        if (isset($vlanMode[1]) && $vlanMode[1] > 1 && $vlanMode[1] != 1000 && $vlanMode[1] != 999) {
             $result = self::INTERFACE_ACCESS;
         }
         

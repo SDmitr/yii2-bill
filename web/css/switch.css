@@ -60,3 +60,14 @@
     background-color: #5cb85c;
     border-color: #4cae4c;
 }
+
+.switches-view .device .row .interface.shutdown
+{
+    background-color: #ca2121;
+    border-color: #ca2121;
+}
+
+.switches-view .device .row .interface.trunk
+{
+    border: 2px #2621ca solid;
+}

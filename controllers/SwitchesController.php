@@ -97,8 +97,8 @@ class SwitchesController extends Controller
                 
         return $this->render('view', [
             'model' => $model,
-            'interfacesStatus' => $interfaces['status'],
-            'power' => $interfaces['power'],
+            'interfaces' => $interfaces,
+            'power' => count($interfaces) ? true : false,
             'dataProvider' => $dataProvider,
         ]);
     }

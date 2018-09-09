@@ -51,13 +51,14 @@ class InterfaceController extends Controller {
         foreach ($this->switches as $switch)
         {
             $macTable = unserialize($switch->fdb);
-
-            foreach ($macTable as $key => $value)
+            $interfaceTable = unserialize($switch->interfaces);
+            
+            foreach ($macTable as $key => $interface)
             {
-                if ($mac == $key && $this->getCount($macTable, $value) <= 2 && $switch->status == Switches::STATUS_UP)
+                if ($mac == $key && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS && $switch->status == Switches::STATUS_UP)
                 {
                     $result['id'] = $switch->id;
-                    $result['interface'] = $value;
+                    $result['interface'] = $interface;
                     $isFound = true;
                 }
             }
@@ -81,6 +82,11 @@ class InterfaceController extends Controller {
             }
         }
         return $result;
+    }
+    
+    private function getVlanMode($interfaceTable, $interface)
+    {
+        return $interfaceTable[$interface]['vlan_mode'];
     }
 }
 

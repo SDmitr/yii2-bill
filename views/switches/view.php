@@ -14,11 +14,11 @@ $this->title = $model->ip;
 
 $deviceWidth = '75vw';
 
-if (count($interfacesStatus) <= 12)
+if (count($interfaces) <= 12)
 {
     $deviceWidth = '60vw';
 }
-elseif (count($interfacesStatus) >= 24)
+elseif (count($interfaces) >= 24)
 {
     $deviceWidth = '77vw';
 }
@@ -63,18 +63,20 @@ elseif (count($interfacesStatus) >= 24)
     <div class="row device" style="width: <?= $deviceWidth ?>">
         <div class="row">
             <?php $i = 1 ?>
-            <?php foreach ($interfacesStatus as $id => $item): ?>
-                <?php if ($i % 2 != 0 || count($interfacesStatus) <= 12): ?>
-                    <?php $status = ($item == 1) ? 'active' : '' ?>
+            <?php foreach ($interfaces as $id => $item): ?>
+                <?php if ($i % 2 != 0 || count($interfaces) <= 12): ?>
+                    <?php $status = ($item['status'] == 1) ? 'active' : '' ?>
+                    <?php $adminStatus = ($item['admin_status'] == 2) ? 'shutdown' : '' ?>
+                    <?php $vlanMode = ($item['vlan_mode'] == 2) ? 'trunk' : '' ?>
                     <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
                     <?php if($inet !== null): ?>
                         <?= Html::a(
-                                '<div class="interface ' . $status . '">' . Html::encode($i) . '<i class="glyphicon glyphicon-pushpin" style="float: right;"></i></div>',
+                                '<div class="interface ' . $status . ' ' . $adminStatus . ' ' . $vlanMode . '">' . Html::encode($i) . '<i class="glyphicon glyphicon-pushpin" style="float: right;"></i></div>',
                                 Url::to(['inet/view', 'id' => $inet->id]),
                                 ['title' => $inet->client->name , 'data-pjax' => 0]
                         ) ?>
                     <?php else: ?>
-                        <?= '<div class="interface ' . $status . '">' . Html::encode($i) . '</div>' ?>
+                        <?= '<div class="interface ' . $status . ' ' . $adminStatus . ' ' . $vlanMode . '">' . Html::encode($i) . '</div>' ?>
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php $i++ ?>
@@ -88,20 +90,22 @@ elseif (count($interfacesStatus) >= 24)
             <?php endif; ?>
             <div class="power"><i class="glyphicon <?= $icon ?> <?= $active ?>"></i></div>
         </div>
-        <?php if (count($interfacesStatus) > 12): ?>
+        <?php if (count($interfaces) > 12): ?>
             <div class="row">
                 <?php $i = 1 ?>
-                <?php foreach ($interfacesStatus as $id => $item): ?>
+                <?php foreach ($interfaces as $id => $item): ?>
                     <?php if ($i % 2 == 0): ?>
-                        <?php $status = ($item == 1) ? 'active' : '' ?>
+                        <?php $status = ($item['status'] == 1) ? 'active' : '' ?>
+                        <?php $adminStatus = ($item['admin_status'] == 2) ? 'shutdown' : '' ?>
+                        <?php $vlanMode = ($item['vlan_mode'] == 2) ? 'trunk' : '' ?>
                         <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
                         <?php if($inet !== null): ?>
                             <?= Html::a(
-                                    '<div class="interface ' . $status . '">' . Html::encode($i) . '<i class="glyphicon glyphicon-pushpin" style="float: right;"></i></div>',
+                                    '<div class="interface ' . $status . ' ' . $adminStatus . ' ' . $vlanMode . '">' . Html::encode($i) . '<i class="glyphicon glyphicon-pushpin" style="float: right;"></i></div>',
                                     Url::to(['inet/view', 'id' => $inet->id]),
                                     ['title' => $inet->client->name , 'data-pjax' => 0]) ?>
                         <?php else: ?>
-                            <?= '<div class="interface ' . $status . '">' . Html::encode($i) . '</div>' ?>
+                            <?= '<div class="interface ' . $status . ' ' . $adminStatus . ' ' . $vlanMode . '">' . Html::encode($i) . '</div>' ?>
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php $i++ ?>
@@ -129,13 +133,6 @@ elseif (count($interfacesStatus) >= 24)
                 },
                 'visible' =>  Yii::$app->user->can('arpInet'),
             ],
-            'ip',
-            'mac',
-            'comment',
-            [
-                'attribute' => 'switch',
-                'value' => 'switches.ip',
-            ],
             [
                 'attribute' => 'interface',
                 'format' => 'raw',
@@ -150,14 +147,31 @@ elseif (count($interfacesStatus) >= 24)
                 },
             ],
             [
+                'attribute' => 'client.num',
+                'value' => 'client.num',
+            ],
+            [
+                'attribute' => 'client.name',
+                'value' => 'client.name',
+            ],
+            [
+                'attribute' => 'client.street',
+                'value' => 'client.street',
+            ],
+            [
+                'attribute' => 'client.building',
+                'value' => 'client.building',
+            ],
+            [
+                'attribute' => 'client.room',
+                'value' => 'client.room',
+            ],
+            'ip',
+            'mac',
+            [
                 'attribute' => 'onu_mac',
                 'format' => 'raw',
                 'value' => function ($model) { return Html::a(Html::encode($model->onu_mac), Url::to(['pon/view', 'id' => $model->onu_mac ]), ['data-pjax' => 0]); },
-            ],
-            [
-                'attribute' => 'tarif_id',
-                'filter' => TarifInet::find()->select(['name', 'id'])->indexBy('id')->column(),
-                'value' => 'tarif.name'
             ],
             Yii::$app->user->can('statusInet') ?
                 [
@@ -173,9 +187,6 @@ elseif (count($interfacesStatus) >= 24)
                     'value' => 'status.name',
                     'options' => ['style' => 'width:130px;'],
                 ],
-            //            'date_on',
-            //            'date_off',
-            'date_create',
         ],
     ]); ?>
     <?php Pjax::end(); ?>

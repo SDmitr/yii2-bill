@@ -23,6 +23,9 @@ class Switches extends \yii\db\ActiveRecord
 {
     const STATUS_UP = 1;
     const STATUS_DOWN = 2;
+    
+    const INTERFACE_ACCESS = 1;
+    const INTERFACE_TRUNK = 2;
 
     private $fdbOid = array(
         'Nexthop'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
@@ -34,8 +37,6 @@ class Switches extends \yii\db\ActiveRecord
         'Edge-core'     => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'BDCOM'         => '1.3.6.1.4.1.3320.152.1.1.1',
         'Unknown'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-
-
     );
 
     /**
@@ -93,10 +94,6 @@ class Switches extends \yii\db\ActiveRecord
 
     public function getInterfacesStatus()
     {
-        $result = array(
-            'status' => array(),
-            'power'  => true
-        );
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $interfaces = unserialize($this->interfaces);
@@ -110,14 +107,16 @@ class Switches extends \yii\db\ActiveRecord
                         $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
                         if ($session->getError()) throw new \Exception ($session->getError());
                         $interfaceStatus = preg_replace('/\D/', '', $status);
-                        $result['status'][$id] = $interfaceStatus;
-                        $result['power'] = true;
+                        $result[$id]['status'] = $interfaceStatus;
+                        $result[$id]['vlan_mode'] = $item['vlan_mode'];
+                        $result[$id]['admin_status'] = $item['status'];
                     } catch (\Exception $e) {
                         foreach ($interfaces as $id => $item)
                         {
-                            $result['status'][$id] = self::STATUS_DOWN;
+                            $result[$id]['status'] = self::STATUS_DOWN;
+                            $result[$id]['vlan_mode'] = self::INTERFACE_ACCESS;
+                            $result[$id]['admin_status'] = self::STATUS_UP;
                         }
-                        $result['power'] = false;
                         break;
                     }
                 }
@@ -128,7 +127,7 @@ class Switches extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getInterfacesName()
+    public function getInterfaces()
     {
         $result = array();
         if (!empty($this->interfaces))
@@ -156,11 +155,38 @@ class Switches extends \yii\db\ActiveRecord
                     preg_match('~\w+\:\s\"(.+)\"~', $name, $interfaceName);
                     $result[$id]['name'] = !empty($interfaceName[1]) ? $interfaceName[1] : $id;
                     $result[$id]['type'] = $interfaceType;
+                    $result[$id]['status'] = $this->getStatus($id);
+                    $result[$id]['vlan_mode'] = $this->getVlanMode($id);
                 }
             }
         }
 
         $session->close();
+        return $result;
+    }
+    
+    public function getStatus($id)
+    {
+        $result = '';
+        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
+        $session->oid_increasing_check = false;
+        $status = @$session->get('1.3.6.1.2.1.2.2.1.7.' . $id);
+        $status = preg_replace('/\D/', '', $status);
+        
+        return $status;
+    }
+    
+    public function getVlanMode($id)
+    {
+        $result = self::INTERFACE_TRUNK;
+        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
+        $session->oid_increasing_check = false;
+        $vlan = @$session->get('1.3.6.1.2.1.17.7.1.4.5.1.1.' . $id);
+        preg_match('~\w+\:\s(\w+)~', $vlan, $vlanMode);
+        if (isset($vlanMode[1]) && $vlanMode[1] > 1 && $vlanMode[1] != 1000) {
+            $result = self::INTERFACE_ACCESS;
+        }
+        
         return $result;
     }
 

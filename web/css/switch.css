@@ -49,7 +49,7 @@
     text-align: center;
     height: 100%;
     background-color: #1f1f1f;
-    border-color: #151515;
+    border: 2px #151515 solid;
     border-radius: 0.5vw;
     color: #ffffff;
     width: 4vw;
@@ -58,7 +58,7 @@
 .switches-view .device .row .interface.active
 {
     background-color: #5cb85c;
-    border-color: #4cae4c;
+    border: 2px #4cae4c solid;
 }
 
 .switches-view .device .row .interface.shutdown

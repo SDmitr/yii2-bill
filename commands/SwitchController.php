@@ -37,7 +37,6 @@ class SwitchController extends Controller {
                 $switch->interfaces = serialize($switch->getInterfaces());
                 $switch->name = $switch->getSwitchName();
                 $switch->vendor = $vendor;
-                $switch->mac = $switch->getMac();
                 $fdb = $switch->getFdb();
                 $switch->fdb = serialize($fdb);
                 $switch->status = Switches::STATUS_UP;

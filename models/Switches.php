@@ -11,7 +11,6 @@ use \SNMP;
  * @property integer $id
  * @property string $name
  * @property string $vendor
- * @property string $mac
  * @property string $ip
  * @property string $interfaces
  * @property string $fdb
@@ -79,7 +78,6 @@ class Switches extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Название',
             'vendor' => 'Производитель',
-            'mac' => 'MAC',
             'ip' => 'IP-адрес',
             'interfaces' => 'Интерфейсы',
             'fdb' => 'MAC-таблица',
@@ -103,25 +101,6 @@ class Switches extends \yii\db\ActiveRecord
         }
         $session->close();
         return $name;
-    }
-
-    public function getMac()
-    {
-        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
-        $session->oid_increasing_check = false;
-        $string = @$session->get("1.3.6.1.2.1.17.1.1.0");
-//        if ($session->getError()) throw new \Exception ($session->getError());
-
-        $result = explode(':', $string);
-
-        if (!empty($result[1]))
-        {
-            $mac = strtolower(preg_replace('/\s+/', '', $result[1]));
-        } else {
-            $mac = '';
-        }
-        $session->close();
-        return $mac;
     }
 
     public function getInterfacesStatus()

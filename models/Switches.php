@@ -203,7 +203,7 @@ class Switches extends \yii\db\ActiveRecord
         $system = @$session->get("1.3.6.1.2.1.1.1.0");
         if ($session->getError()) throw new \Exception ($session->getError());
 
-        if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0) {
+        if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0 || strpos($system, 'Internetwork Operating System')) {
             $result = 'Nexthop';
         } else if (strpos($system, 'ES')) {
             $result = 'Edge-core';

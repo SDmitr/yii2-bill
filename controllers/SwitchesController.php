@@ -94,11 +94,20 @@ class SwitchesController extends Controller
             ],
         ]);
         $dataProvider->query->all();
+
+        $interfacesDown = 0;
+        foreach ($interfaces as $interface)
+        {
+            if ($interface['status'] == Switches::STATUS_DOWN)
+            {
+                $interfacesDown++;
+            }
+        }
                 
         return $this->render('view', [
             'model' => $model,
             'interfaces' => $interfaces,
-            'power' => count($interfaces) ? true : false,
+            'power' => count($interfaces) > $interfacesDown ? true : false,
             'dataProvider' => $dataProvider,
         ]);
     }

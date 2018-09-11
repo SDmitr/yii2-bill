@@ -10,7 +10,7 @@ class m170215_071335_switches extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'vendor' => $this->string()->notNull(),
-            'oid' => $this->string(),
+            'mac' => $this->string(),
             'ip' => $this->string()->notNull()->unique(),
             'interfaces' => $this->text(),
             'fdb' => $this->text(),

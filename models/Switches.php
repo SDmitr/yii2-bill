@@ -11,7 +11,7 @@ use \SNMP;
  * @property integer $id
  * @property string $name
  * @property string $vendor
- * @property string $oid
+ * @property string $mac
  * @property string $ip
  * @property string $interfaces
  * @property string $fdb
@@ -26,6 +26,19 @@ class Switches extends \yii\db\ActiveRecord
     
     const INTERFACE_ACCESS = 1;
     const INTERFACE_TRUNK = 2;
+
+    private $localMacOid = array(
+        'Nexthop'       => '1.3.6.1.2.1.17.1.1.0',
+        'Foxgate'       => '1.3.6.1.2.1.17.1.1.0',
+        'Huawei'        => '1.3.6.1.2.1.17.1.1.0',
+        'Foxgate S6008' => '1.3.6.1.2.1.17.1.1.0',
+        'Cisco'         => '1.3.6.1.2.1.17.1.1.0',
+        'ROS'           => '1.3.6.1.2.1.17.1.1.0',
+        'Edge-core'     => '1.3.6.1.2.1.17.1.1.0',
+        'BDCOM'         => '1.3.6.1.2.1.17.1.1.0',
+        'Unknown'       => '1.3.6.1.2.1.17.1.1.0',
+    );
+
 
     private $fdbOid = array(
         'Nexthop'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
@@ -66,7 +79,7 @@ class Switches extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Название',
             'vendor' => 'Производитель',
-            'oid' => 'OID',
+            'mac' => 'MAC',
             'ip' => 'IP-адрес',
             'interfaces' => 'Интерфейсы',
             'fdb' => 'MAC-таблица',
@@ -90,6 +103,25 @@ class Switches extends \yii\db\ActiveRecord
         }
         $session->close();
         return $name;
+    }
+
+    public function getMac()
+    {
+        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
+        $session->oid_increasing_check = false;
+        $string = @$session->get("1.3.6.1.2.1.17.1.1.0");
+        if ($session->getError()) throw new \Exception ($session->getError());
+
+        $result = explode(':', $string);
+
+        if (!empty($result[1]))
+        {
+            $mac = strtolower(preg_replace('/\s+/', '', $result[1]));
+        } else {
+            $mac = '';
+        }
+        $session->close();
+        return $mac;
     }
 
     public function getInterfacesStatus()
@@ -226,7 +258,7 @@ class Switches extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getFdb($vendor)
+    public function getFdb()
     {
         $result = array();
         if (!empty($this->fdb))
@@ -237,9 +269,9 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
         $session->oid_increasing_check = false;
 
-        if (!empty($this->fdbOid[$vendor]))
+        if (!empty($this->fdbOid[$this->vendor]))
         {
-            $oid = $this->fdbOid[$vendor];
+            $oid = $this->fdbOid[$this->vendor];
         } else {
             $oid = $this->fdbOid['Unknown'];
         }

@@ -110,7 +110,7 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $string = @$session->get("1.3.6.1.2.1.17.1.1.0");
-        if ($session->getError()) throw new \Exception ($session->getError());
+//        if ($session->getError()) throw new \Exception ($session->getError());
 
         $result = explode(':', $string);
 

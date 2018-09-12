@@ -44,7 +44,7 @@ elseif (count($interfaces) >= 24)
         <div class="col-xs-3 col-sm-1">
             <?= Html::a(
                     '<span class="glyphicon glyphicon-chevron-left"></span> Назад',
-                    ['inet/index'],
+                    ['switches/index'],
                     ['class' => 'btn btn-warning']
             ) ?>
         </div>

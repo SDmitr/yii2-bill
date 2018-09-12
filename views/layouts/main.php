@@ -48,6 +48,7 @@ if (!Yii::$app->user->isGuest):
             ['label' => '<span class="glyphicon glyphicon-globe"></span> Интернет', 'url' => ['/inet/index']],
             ['label' => '<span class="glyphicon glyphicon-cog"></span> Сервисы',
                 'items' => [
+                    ['label' => '<span class="glyphicon glyphicon-hdd"></span> Коммутаторы', 'url' => ['/switches/index']],
                     ['label' => '<span class="glyphicon glyphicon-flash"></span> Уровни сигналов PON', 'url' => ['/pon/index']],
                     Yii::$app->user->can('indexStat') ? (
                         ['label' => '<span class="glyphicon glyphicon-signal"></span> Статистика', 'url' => ['/stat/index']]

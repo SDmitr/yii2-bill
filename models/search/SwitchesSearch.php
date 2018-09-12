@@ -65,7 +65,9 @@ class SwitchesSearch extends Switches
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', '{{%switches}}.name', $this->name]);
+        $query->andFilterWhere(['like', '{{%switches}}.vendor', $this->vendor]);
+        $query->andFilterWhere(['like', '{{%switches}}.ip', $this->ip]);
 
         return $dataProvider;
     }

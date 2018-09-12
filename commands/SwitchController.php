@@ -33,12 +33,10 @@ class SwitchController extends Controller {
                     $switch->vendor = 'Unknown';
                 }
 
-                $vendor = $switch->getVendor();
-                $switch->interfaces = serialize($switch->getInterfaces());
-                $switch->name = $switch->getSwitchName();
-                $switch->vendor = $vendor;
-                $fdb = $switch->getFdb();
-                $switch->fdb = serialize($fdb);
+                $switch->setVendor();
+                $switch->setInterfaces();
+                $switch->setSwitchName();
+                $switch->setFdb();
                 $switch->status = Switches::STATUS_UP;
                 $switch->save();
                 echo $ip . " производитель " . $switch->vendor . " название " . $switch->name . " кол-во портов " . $switch->interfaces . "\n";

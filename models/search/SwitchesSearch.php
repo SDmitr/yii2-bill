@@ -41,7 +41,7 @@ class SwitchesSearch extends Switches
      */
     public function search($params)
     {
-        $query = Switches::find();
+        $query = Switches::find()->joinWith(['status']);
 
         // add conditions that should always apply here
 
@@ -50,6 +50,11 @@ class SwitchesSearch extends Switches
 //            'pagination' => [
 //                'pagesize' => 10,
 //            ]
+            'sort'=> [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ]
+            ]
         ]);
 
         $this->load($params);
@@ -62,7 +67,8 @@ class SwitchesSearch extends Switches
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            '{{%switches}}.id' => $this->id,
+            '{{%switches}}.status' => $this->status,
         ]);
 
         $query->andFilterWhere(['like', '{{%switches}}.name', $this->name]);

@@ -67,6 +67,22 @@ $pageSize = PageSize::widget([
             ],
             'ip',
             [
+                'attribute' => 'onu_mac',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $count = 0;
+                    $interfaces = unserialize($model->interfaces);
+                    if (!empty($interfaces)) {
+                        foreach ($interfaces as $interface) {
+                            if (isset($interface['type']) && $interface['type'] == 6) {
+                                $count++;
+                            }
+                        }
+                    }
+                    return $count;
+                },
+            ],
+            [
                 'attribute' => 'status_id',
                 'value' => 'status.name',
                 'filter' => Status::find()->select(['name', 'id'])->indexBy('id')->column(),

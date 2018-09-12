@@ -18,8 +18,8 @@ class SwitchesSearch extends Switches
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name'], 'safe'],
+            [['id', 'status_id'], 'integer'],
+            [['name', 'vendor', 'ip'], 'safe'],
         ];
     }
 
@@ -68,7 +68,7 @@ class SwitchesSearch extends Switches
         // grid filtering conditions
         $query->andFilterWhere([
             '{{%switches}}.id' => $this->id,
-            '{{%switches}}.status' => $this->status,
+            '{{%switches}}.status_id' => $this->status_id,
         ]);
 
         $query->andFilterWhere(['like', '{{%switches}}.name', $this->name]);

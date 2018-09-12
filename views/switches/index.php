@@ -54,8 +54,6 @@ $pageSize = PageSize::widget([
                 'template' => '{view}',
             ],
             'name',
-            'vendor',
-
             [
                 'attribute' => 'vendor',
                 'value' => 'vendor',
@@ -67,10 +65,9 @@ $pageSize = PageSize::widget([
                 ],
                 'options' => ['style' => 'width:130px;'],
             ],
-
             'ip',
             [
-                'attribute' => 'status',
+                'attribute' => 'status_id',
                 'value' => 'status.name',
                 'filter' => Status::find()->select(['name', 'id'])->indexBy('id')->column(),
                 'filterInputOptions' => [

@@ -37,11 +37,11 @@ class SwitchController extends Controller {
                 $switch->setInterfaces();
                 $switch->setSwitchName();
                 $switch->setFdb();
-                $switch->status = Switches::STATUS_UP;
+                $switch->status_id = Switches::STATUS_UP;
                 $switch->save();
                 echo $ip . " производитель " . $switch->vendor . " название " . $switch->name . " кол-во портов " . $switch->interfaces . "\n";
             } catch (\Exception $e) {
-                $switch->status = Switches::STATUS_DOWN;
+                $switch->status_id = Switches::STATUS_DOWN;
                 $switch->save();
                 echo $e->getMessage() . "\n";
             }

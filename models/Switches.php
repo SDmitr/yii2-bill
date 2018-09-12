@@ -15,7 +15,7 @@ use app\models\Status;
  * @property string $ip
  * @property string $interfaces
  * @property string $fdb
- * @property integer $status
+ * @property integer $status_id
  *
  * @property Switches[] $switches
  */
@@ -67,7 +67,7 @@ class Switches extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['status'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status' => 'id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'id']],
         ];
     }
 
@@ -83,7 +83,7 @@ class Switches extends \yii\db\ActiveRecord
             'ip' => 'IP-адрес',
             'interfaces' => 'Интерфейсы',
             'fdb' => 'MAC-таблица',
-            'status' => 'Статус'
+            'status_id' => 'Статус'
         ];
     }
 
@@ -107,6 +107,7 @@ class Switches extends \yii\db\ActiveRecord
 
     public function getInterfacesStatus()
     {
+        $result = array();
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $interfaces = unserialize($this->interfaces);
@@ -168,7 +169,7 @@ class Switches extends \yii\db\ActiveRecord
                     preg_match('~\w+\:\s\"(.+)\"~', $name, $interfaceName);
                     $result[$id]['name'] = !empty($interfaceName[1]) ? $interfaceName[1] : $id;
                     $result[$id]['type'] = $interfaceType;
-                    $result[$id]['status'] = $this->setStatus($id);
+                    $result[$id]['status'] = $this->setInterfaceStatus($id);
                     $result[$id]['vlan_mode'] = $this->setVlanMode($id);
                 }
             }
@@ -178,9 +179,8 @@ class Switches extends \yii\db\ActiveRecord
         $this->interfaces = serialize($result);
     }
     
-    public function setStatus($id)
+    public function setInterfaceStatus($id)
     {
-        $result = '';
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $status = @$session->get('1.3.6.1.2.1.2.2.1.7.' . $id);
@@ -287,6 +287,6 @@ class Switches extends \yii\db\ActiveRecord
 
     public function getStatus()
     {
-        return $this->hasOne(Status::className(), ['id' => 'status']);
+        return $this->hasOne(Status::className(), ['id' => 'status_id']);
     }
 }

@@ -67,7 +67,7 @@ $pageSize = PageSize::widget([
             ],
             'ip',
             [
-                'attribute' => 'onu_mac',
+                'attribute' => 'Количество интерфейсов',
                 'format' => 'raw',
                 'value' => function ($model) {
                     $count = 0;

@@ -55,7 +55,7 @@ class InterfaceController extends Controller {
             
             foreach ($macTable as $key => $interface)
             {
-                if ($mac == $key && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS && $switch->status == Switches::STATUS_UP)
+                if ($mac == $key && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS && $switch->status_id == Switches::STATUS_UP)
                 {
                     $result['id'] = $switch->id;
                     $result['interface'] = $interface;

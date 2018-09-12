@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\search\SwitchesSearch;
 use app\models\Switches;
 use Yii;
 use yii\filters\AccessControl;
@@ -59,19 +60,33 @@ class SwitchesController extends Controller
             ],
         ];
     }
-    
+
     /**
-     * Lists all Switches models.
+     * Lists all Money models.
      * @return mixed
      */
     public function actionIndex()
     {
-//        $fdb = file_get_contents('uploads/fdb');
-//        var_dump(unserialize($fdb));
-//        die();
-//        $switch = SwitchCommand::actionIndex();
-        die('test');
+        $searchModel = new SwitchesSearch();
+        $filter = Yii::$app->request->queryParams;
+        if (count($filter) <= 1) {
+            $filter = Yii::$app->session['switchesparams'];
+            if(isset(Yii::$app->session['switchesparams']['page']))
+                $_GET['page'] = Yii::$app->session['switchesparams']['page'];
+        } else {
+            Yii::$app->session['switchesparams'] = $filter;
+        }
+
+        $dataProvider = $searchModel->search($filter);
+        $dataProvider->pagination->pageSizeLimit =[1, 1000000];
+        $dataProvider->pagination->defaultPageSize = 1000000;
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
+
 
     /**
      * Displays a single Switches model.

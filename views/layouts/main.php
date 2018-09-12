@@ -54,7 +54,7 @@ if (!Yii::$app->user->isGuest):
                         ['label' => '<span class="glyphicon glyphicon-signal"></span> Статистика', 'url' => ['/stat/index']]
                     ) : '',
                     ['label' => '<span class="glyphicon glyphicon-refresh"></span> Перезагрузка DHCP', 'url' => ['/dhcp/create']],
-                    ['label' => '<span class="glyphicon glyphicon-facetime-video"></span> Список каналов', 'url' => ['/playlist/index']],
+//                    ['label' => '<span class="glyphicon glyphicon-facetime-video"></span> Список каналов', 'url' => ['/playlist/index']],
                     ['label' => '<span class="glyphicon glyphicon-envelope"></span> Техподдержка', 'url' => ['/site/contact']],
                 ],
             ],

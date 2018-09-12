@@ -28,11 +28,13 @@ class SwitchController extends Controller {
                 if (empty($switch->id))
                 {
                     $switch = new Switches();
+                    $switch->aton = ip2long($ip);
                     $switch->ip = $ip;
                     $switch->name = 'Unknown';
                     $switch->vendor = 'Unknown';
                 }
 
+                $switch->aton = ip2long($ip);
                 $switch->setVendor();
                 $switch->setInterfaces();
                 $switch->setSwitchName();

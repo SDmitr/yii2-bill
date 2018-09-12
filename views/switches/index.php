@@ -43,7 +43,7 @@ $pageSize = PageSize::widget([
         'filterModel' => $searchModel,
         'filterSelector' => 'select[name="per-page"]',
         'rowOptions' => function($model) {
-            if ($model->status == Switches::STATUS_DOWN) {
+            if ($model->status_id == Switches::STATUS_DOWN) {
                 return ['class' => 'danger'];
 
             }

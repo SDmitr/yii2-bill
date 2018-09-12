@@ -12,6 +12,7 @@ use app\models\Status;
  * @property integer $id
  * @property string $name
  * @property string $vendor
+ * @property integer $aton
  * @property string $ip
  * @property string $interfaces
  * @property string $fdb
@@ -66,7 +67,8 @@ class Switches extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name', 'aton', 'ip'], 'required'],
+            [['aton', 'status_id'], 'integer'],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'id']],
         ];
     }
@@ -80,6 +82,7 @@ class Switches extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Название',
             'vendor' => 'Производитель',
+            'aton' => 'Aton',
             'ip' => 'IP-адрес',
             'interfaces' => 'Интерфейсы',
             'fdb' => 'MAC-таблица',

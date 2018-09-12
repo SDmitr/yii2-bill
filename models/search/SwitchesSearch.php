@@ -18,7 +18,7 @@ class SwitchesSearch extends Switches
     public function rules()
     {
         return [
-            [['id', 'status_id'], 'integer'],
+            [['id', 'aton', 'status_id'], 'integer'],
             [['name', 'vendor', 'ip'], 'safe'],
         ];
     }
@@ -52,10 +52,15 @@ class SwitchesSearch extends Switches
 //            ]
             'sort'=> [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'aton' => SORT_ASC,
                 ]
             ]
         ]);
+
+        $dataProvider->sort->attributes['ip'] = [
+            'asc' => ['{{%switches}}.aton' => SORT_ASC],
+            'desc' => ['{{%switches}}.aton' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -68,6 +73,7 @@ class SwitchesSearch extends Switches
         // grid filtering conditions
         $query->andFilterWhere([
             '{{%switches}}.id' => $this->id,
+            '{{%switches}}.aton' => $this->aton,
             '{{%switches}}.status_id' => $this->status_id,
         ]);
 

@@ -66,9 +66,9 @@ if (!Yii::$app->user->isGuest):
                     Yii::$app->user->can('createTarifInet') ? (
                         ['label' => '<span class="glyphicon glyphicon-usd"></span> Тарифы Интернет', 'url' => ['/tarif-inet/index']]
                     ) : '',
-                    Yii::$app->user->can('createTarifInet') ? (
-                        ['label' => '<span class="glyphicon glyphicon-eur"></span> Тарифы IPTv', 'url' => ['/tarif-tv/index']]
-                    ) : '',
+//                    Yii::$app->user->can('createTarifInet') ? (
+//                        ['label' => '<span class="glyphicon glyphicon-eur"></span> Тарифы IPTv', 'url' => ['/tarif-tv/index']]
+//                    ) : '',
                 ],
             ]
             ) : '',

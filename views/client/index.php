@@ -1,6 +1,8 @@
 <?php
 use yii\grid\GridView;
 use nterms\pagesize\PageSize;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -37,7 +39,20 @@ $pageSize = PageSize::widget([
         'filterModel' => $searchModel,
         'filterSelector' => 'select[name="per-page"]',
         'columns' => [
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{view}'],
+            [
+                'class' => 'app\components\FilterActionColumn',
+                'template' => '{view}',
+                'buttons' => [
+                    'view' => function($url, $model) {
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-eye-open"></span>',
+                            Url::to(['view', 'id' => $model->id]),
+                            [
+                                'data-pjax' => 0
+                            ]);
+                    }
+                ]
+            ],
             'num',
             'name',
             'street',
@@ -51,3 +66,7 @@ $pageSize = PageSize::widget([
     ]); ?>
 <?php Pjax::end(); ?>
 </div>
+
+<?php
+    $this->registerJsFile('@web/js/reset-filter.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>

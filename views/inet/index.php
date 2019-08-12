@@ -61,8 +61,19 @@ $pageSize = PageSize::widget([
                 'class' => 'yii\grid\CheckboxColumn',
              ],
             [
-                'class' => 'yii\grid\ActionColumn',
+                'class' => 'app\components\FilterActionColumn',
                 'template' => '{view}',
+                'buttons' => [
+                    'view' => function($url, $model) {
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-eye-open"></span>',
+                            Url::to(['inet/view', 'id' => $model->id]),
+                            [
+                                'data-pjax' => 0
+                            ]
+                        );
+                    }
+                ]
             ],
             'num',
             [
@@ -188,5 +199,6 @@ $pageSize = PageSize::widget([
 </div>
 
 <?php
+    $this->registerJsFile('@web/js/reset-filter.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->registerJsFile('@web/js/get-phone.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

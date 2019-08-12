@@ -35,6 +35,7 @@ $pageSize = PageSize::widget([
 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 <?php Pjax::begin(['timeout' => 60000, 'enablePushState' => false ]);?>
     <?= GridView::widget([
+        'id' => 'grid',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'filterSelector' => 'select[name="per-page"]',

@@ -119,3 +119,7 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+#reset-filter {
+    padding: 3px 6px;
+}

@@ -12,7 +12,7 @@ use app\models\Status;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Коммутаторы';
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = $this->title;
 
 $pageSize = PageSize::widget([
                         'label' => 'Показать',

@@ -12,7 +12,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Уровни сигналов PON';
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = $this->title;
 
 $reasonArray = PonLast::find()->select(['reason', 'reason'])->groupBy('reason')->column();
 $reason = ArrayHelper::index($reasonArray, function ( $element )  { return $element;});

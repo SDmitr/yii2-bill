@@ -170,6 +170,8 @@ class InetController extends Controller
             } else {
                 return $this->render('update', [
                     'model' => $model,
+                    'networks' => $networks,
+                    'networkId' => $networks->getNetworkId($model->aton),
                 ]);
             }
         } else {

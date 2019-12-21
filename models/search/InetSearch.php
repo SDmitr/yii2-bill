@@ -99,7 +99,7 @@ class InetSearch extends Inet
         // grid filtering conditions
         $query->andFilterWhere([
             '{{%inet}}.id' => $this->id,
-//            '{{%inet}}.num' => $this->num,
+            '{{%inet}}.num' => $this->num,
             '{{%inet}}.aton' => $this->aton,
             '{{%inet}}.interface' => $this->interface,
             '{{%inet}}.tarif_id' => $this->tarif_id,
@@ -114,7 +114,7 @@ class InetSearch extends Inet
             ->andFilterWhere(['like', '{{%inet}}.mac', $this->mac])
 //            ->andFilterWhere(['like', '{{%inet}}.switch', $this->switch])
             ->andFilterWhere(['like', '{{%inet}}.onu_mac', $this->onu_mac])
-            ->andFilterWhere(['like', '{{%inet}}.num', $this->num])
+//            ->andFilterWhere(['like', '{{%inet}}.num', $this->num])
             ->andFilterWhere(['like', '{{%inet}}.date_on', $this->date_on])
             ->andFilterWhere(['like', '{{%inet}}.date_off', $this->date_off])
             ->andFilterWhere(['like', '{{%inet}}.date_create', $this->date_create])

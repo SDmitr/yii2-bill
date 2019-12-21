@@ -92,7 +92,6 @@ class DhcpController extends Controller
         file_put_contents('uploads/dhcp_conf', $config);
         
         $output = shell_exec('sudo /usr/sbin/dhcpd -t -cf uploads/dhcp_conf 2>&1');
-
         
         $log = new Log();
         if (preg_match('/errors/', $output)) {

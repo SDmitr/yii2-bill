@@ -2,7 +2,6 @@
 # user <?= Yii::$app->user->identity->username ?> 
 <?= str_repeat('#', 32) ?>
 
-
 option domain-name "<?= Yii::$app->params['DHCP']['domainName'] ?>";
 option domain-name-servers <?= Yii::$app->params['DHCP']['dnsPrimary'] ?>, <?= Yii::$app->params['DHCP']['dnsSecondary'] ?>;
 option netbios-name-servers <?= Yii::$app->params['DHCP']['dnsSecondary'] ?>;

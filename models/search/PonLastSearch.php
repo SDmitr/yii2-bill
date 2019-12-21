@@ -100,6 +100,7 @@ class PonLastSearch extends PonLast
         // grid filtering conditions
         $query->andFilterWhere([
             '{{%pon_last}}.date' => $this->date,
+            '{{%client}}.num' => $this->num
         ]);
 
         $query->andFilterWhere(['like', '{{%pon_last}}.mac', $this->mac])
@@ -111,7 +112,7 @@ class PonLastSearch extends PonLast
             ->andFilterWhere(['like', '{{%pon_last}}.transmitted_power', $this->transmitted_power])
             ->andFilterWhere(['like', '{{%pon_last}}.temperature_onu', $this->temperature_onu])
             ->andFilterWhere(['like', '{{%pon_last}}.distance', $this->distance])
-            ->andFilterWhere(['like', '{{%client}}.num', $this->num])
+//            ->andFilterWhere(['like', '{{%client}}.num', $this->num])
             ->andFilterWhere(['like', '{{%client}}.name', $this->name])
             ->andFilterWhere(['like', '{{%client}}.street', $this->street])
             ->andFilterWhere(['like', '{{%client}}.building', $this->building])

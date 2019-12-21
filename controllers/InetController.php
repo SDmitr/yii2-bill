@@ -125,6 +125,7 @@ class InetController extends Controller
         $model->num = $num;
         $networks = new Network();
         $model->date_create = date("Y-m-d H:i:s");
+
         if ($model->load(Yii::$app->request->post()) && $networks->load(Yii::$app->request->post())) {
             $model->mac = strtolower($model->mac);
             $model->mac = preg_replace($patterns, ':', $model->mac);
@@ -170,6 +171,8 @@ class InetController extends Controller
             } else {
                 return $this->render('update', [
                     'model' => $model,
+                    'networks' => $networks,
+                    'networkId' => $networks->getNetworkId($model->aton),
                 ]);
             }
         } else {

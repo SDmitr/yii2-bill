@@ -98,14 +98,13 @@ class Switches extends \yii\db\ActiveRecord
         if ($session->getError()) throw new \Exception ($session->getError());
 
         preg_match('~\w+\:\s\"(\w+)\"~', $string, $switchName);
-
         if (empty($switchName[1])) {
             $name = $this->ip;
         } else {
             $name = $switchName[1];
         }
         $session->close();
-        return $name;
+        $this->name = $name;
     }
 
     public function getInterfacesStatus()

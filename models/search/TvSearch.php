@@ -71,6 +71,7 @@ class TvSearch extends Tv
         // grid filtering conditions
         $query->andFilterWhere([
             '{{%tv}}.id' => $this->id,
+            '{{%inet}}.num' => $this->num,
             '{{%tv}}.inet_id' => $this->inet_id,
             '{{%tv}}.tarif_id' => $this->tarif_id,
             '{{%tv}}.status_id' => $this->status_id,
@@ -79,8 +80,7 @@ class TvSearch extends Tv
             '{{%tv}}.date_create' => $this->date_create,
         ]);
         
-        $query->andFilterWhere(['like', '{{%inet}}.num', $this->num])
-            ->andFilterWhere(['like', '{{%tv}}.date_create', $this->date_create]);
+        $query->andFilterWhere(['like', '{{%tv}}.date_create', $this->date_create]);
 
         return $dataProvider;
     }

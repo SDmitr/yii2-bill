@@ -68,6 +68,7 @@ class ClientSearch extends Client
         // grid filtering conditions
         $query->andFilterWhere([
             '{{%client}}.id' => $this->id,
+            '{{%client}}.num' => $this->num
         ]);
 
         $query->andFilterWhere(['like', '{{%client}}.name', $this->name])
@@ -76,8 +77,8 @@ class ClientSearch extends Client
             ->andFilterWhere(['like', '{{%client}}.room', $this->room])
             ->andFilterWhere(['like', '{{%client}}.phone_1', $this->phone_1])
             ->andFilterWhere(['like', '{{%client}}.phone_2', $this->phone_2])
-            ->andFilterWhere(['like', '{{%client}}.email', $this->email])
-            ->andFilterWhere(['like', '{{%client}}.num', $this->num]);
+            ->andFilterWhere(['like', '{{%client}}.email', $this->email]);
+//            ->andFilterWhere(['like', '{{%client}}.num', $this->num]);
 
         return $dataProvider;
     }

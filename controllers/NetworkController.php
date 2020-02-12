@@ -169,8 +169,13 @@ class NetworkController extends Controller
         $network = $this->findModel($id)->attributes;
         $response = array();
         $response['pon'] = false;
+        $newUsedIp = array();
+        foreach ($usedIp as $ip) { 
+            $newUsedIp[] = ip2long(long2ip($ip['aton']));
+        }
+
         for ($aton = ip2long($network['first_ip']); $aton <= ip2long($network['last_ip']); $aton++) {
-            if (!key_exists($aton, $usedIp)) {
+            if (!in_array($aton, $newUsedIp)) {
                 $response['ip'] = long2ip($aton);
                 $inet->ip = long2ip($aton);
                 $response['aton'] = $aton;

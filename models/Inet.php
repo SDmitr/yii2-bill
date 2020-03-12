@@ -159,16 +159,24 @@ class Inet extends \yii\db\ActiveRecord
             $api = new RouterosAPI();
             if ($api->connect($mikrotik['address'], $mikrotik['login'], $mikrotik['password']) && empty($insert)) {
                 $isPresent = true;
+                $ip = empty($this->oldAttributes['ip']) ? $this->ip : $this->oldAttributes['ip'];
                 while ($isPresent) {
-                    $result = $api->comm('/ip/firewall/address-list/print');
-                    foreach ($result as $item) {
-                        if (($item['address'] == $this->oldAttributes['ip'] || $item['address'] == $this->oldAttributes['ip']) && $item['list'] != $mikrotik['blacklist']) {
-                            $api->comm('/ip/firewall/address-list/remove', array('.id' => $item['.id']));
-                            $isPresent = true;
-                            break;
-                        } else {
-                            $isPresent = false;
+                    $result = $api->comm('/ip/firewall/address-list/print',
+                        array(
+                            '?address' => $ip
+                        ));
+                    if (!empty($result)) {
+                        foreach ($result as $item) {
+                            if ($item['address'] == $ip && $item['list'] != $mikrotik['blacklist']) {
+                                $api->comm('/ip/firewall/address-list/remove', array('.id' => $item['.id']));
+                                $isPresent = true;
+                                break;
+                            } else {
+                                $isPresent = false;
+                            }
                         }
+                    } else {
+                        $isPresent = false;
                     }
                 }
                 $api->disconnect();

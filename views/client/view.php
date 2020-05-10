@@ -68,7 +68,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => $model->street . ', ' . $model->building . ', ' .$model->room,
                 'label' => 'Адрес'
             ],
-            'phone_1',
+            [
+                'attribute' => 'phone_1',
+                'format'=>'raw',
+                'value'=>Html::a($model->phone_1, 'tel:' . $model->phone_1),
+            ],
             'phone_2',
             'email:email',
         ],

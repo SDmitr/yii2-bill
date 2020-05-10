@@ -71,9 +71,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'phone_1',
                 'format'=>'raw',
-                'value'=>Html::a($model->phone_1, 'tel:' . $model->phone_1),
+                'value'=> !empty($model->phone_1) ? Html::a($model->phone_1, 'tel:' . $model->phone_1) : '',
             ],
-            'phone_2',
+            [
+                'attribute' => 'phone_2',
+                'format'=>'raw',
+                'value'=> !empty($model->phone_2) ? Html::a($model->phone_2, 'tel:' . $model->phone_2) : '',
+            ],
             'email:email',
         ],
     ]) ?>

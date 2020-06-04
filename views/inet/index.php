@@ -104,29 +104,40 @@ $pageSize = PageSize::widget([
                 'value' => function ($model) {
                     $switch = $model->switches;
                     if($switch !== null) {
+                        $macOnu = '';
+                        $interfaces = unserialize($switch->interfaces);
+                        foreach ($interfaces as $key => $interface) {
+                            if (strtolower($interface['name']) == strtolower($model->interface)) {
+                                $interfaceId = $key;
+                                break;
+                            }
+                        }
+
+                        if (!empty($interfaceId)) {
+                            $macOnu = isset($interfaces[$interfaceId]['onu']) ? $interfaces[$interfaceId]['onu'] : '';
+                        }
+
+                        $link = empty($macOnu) ? Url::to(['switches/view', 'id' => $switch->id]) : Url::to(['pon/view', 'id' => $macOnu ]);
+                        $title = empty($macOnu) ? $switch->name : $macOnu;
+
                         return Html::a(
                                 Html::encode($switch->ip),
-                                Url::to(['switches/view', 'id' => $switch->id]),
-                                ['title' => $switch->name , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
+                                $link,
+                                ['title' => $title , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
                         );
                     }
                     return false;
                 },
-                'filter' => false
             ],
             [
                 'attribute' => 'interface',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $switch = $model->switches;
-                    if($switch !== null) {
-                        $interfaces = unserialize($switch->interfaces);
-                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
-                        return $interfaceName;
+                    if($model->interface !== null) {
+                        return $model->interface;
                     }
                     return false;
                 },
-                'filter' => false
             ],
             [
                 'attribute' => 'onu_mac',

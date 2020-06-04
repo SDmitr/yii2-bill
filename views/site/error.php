@@ -11,9 +11,13 @@ $this->title = $name;
 ?>
 <div class="site-error">
     <div class="row" style="margin-bottom: 20px;">
-        <div class="col-xs-3 col-sm-1">
-            <?= Html::a('<span class="glyphicon glyphicon-chevron-left"></span> Назад', Yii::$app->request->referrer, ['class' => 'btn btn-warning']) ?>
-        </div>
+        <?php if (Yii::$app->request->referrer): ?>
+            <div class="col-xs-3 col-sm-1">
+                <?= Html::a('<span class="glyphicon glyphicon-chevron-left"></span> Назад', Yii::$app->request->referrer, ['class' => 'btn btn-warning']) ?>
+            </div>
+        <?php else: ?>
+            <div class="col-xs-3 col-sm-1"></div>
+        <?php endif; ?>
         <div  class="col-xs-9 col-sm-10">
             <h3 style="margin: 0 auto; text-align: center;"><?= Html::encode($this->title) ?></h3>
         </div>

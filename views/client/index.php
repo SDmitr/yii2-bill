@@ -59,8 +59,20 @@ $pageSize = PageSize::widget([
             'street',
             'building',
             'room',
-            'phone_1',
-            'phone_2',
+            [
+                'attribute' => 'phone_1',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    return !empty($model->phone_1) ? Html::a($model->phone_1, 'tel:' . $model->phone_1) : '';
+                },
+            ],
+            [
+                'attribute' => 'phone_2',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    return !empty($model->phone_2) ? Html::a($model->phone_2, 'tel:' . $model->phone_2) : '';
+                },
+            ],
             'email:email',
         ],
 	'layout' => "<div class='row'><div align='left' class='col-xs-6 form-inline'>" . $pageSize .  "</div><div align='right' class='col-xs-6'>{summary}</div></div><p>{items}<div align='center'>{pager}</div>"

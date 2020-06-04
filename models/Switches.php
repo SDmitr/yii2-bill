@@ -139,11 +139,13 @@ class Switches extends \yii\db\ActiveRecord
                         $result[$id]['status'] = $interfaceStatus;
                         $result[$id]['vlan_mode'] = $item['vlan_mode'];
                         $result[$id]['admin_status'] = $item['status'];
+                        $result[$id]['name'] = $item['name'];
                     } catch (\Exception $e) {
                         foreach ($interfaces as $id => $item) {
                             $result[$id]['status'] = self::STATUS_DOWN;
                             $result[$id]['vlan_mode'] = self::INTERFACE_ACCESS;
                             $result[$id]['admin_status'] = self::STATUS_UP;
+                            $result[$id]['name'] = '';
                         }
                         break;
                     }

@@ -100,7 +100,7 @@ class SwitchesController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $interfaces = $model->getInterfacesStatus();
+        $interfaces = $model->getInterfaces();
         $filter = Yii::$app->request->queryParams;
 
         if (count($filter) <= 1) {

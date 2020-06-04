@@ -68,7 +68,7 @@ elseif (count($interfaces) >= 24)
                     <?php $status = ($item['status'] == 1) ? 'active' : '' ?>
                     <?php $adminStatus = ($item['admin_status'] == 2 && $model->vendor != 'Foxgate') ? 'shutdown' : '' ?>
                     <?php $vlanMode = ($item['vlan_mode'] == 2) ? 'trunk' : '' ?>
-                    <?php $inet = Inet::findOne(['switch' => $model->id, 'interface' => $id]) ?>
+                    <?php $inet = Inet::findOne(['switch' => $model->ip, 'interface' => $item['name']]) ?>
                     <?php if($inet !== null): ?>
                         <?= Html::a(
                                 '<div class="interface ' . $status . ' ' . $adminStatus . ' ' . $vlanMode . '">' . Html::encode($i) . '<i class="glyphicon glyphicon-pushpin" style="float: right;"></i></div>',

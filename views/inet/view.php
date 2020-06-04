@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'switch',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $switch = Switches::findOne($model->switch);
+                    $switch = Switches::findOne(['ip' => $model->switch]);
                     if($switch !== null) {
                         return Html::a(Html::encode($switch->ip), Url::to(['switches/view', 'id' => $switch->id]), ['title' => $switch->name ], ['data-pjax' => 0]);
                     }
@@ -93,16 +93,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'interface',
-                'format' => 'raw',
-                'value' => function ($model) {
-                    $switch = Switches::findOne($model->switch);
-                    if($switch !== null) {
-                        $interfaces = unserialize($switch->interfaces);
-                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
-                        return $interfaceName;
-                    }
-                    return false;
-                },
             ],
             [
                 'attribute' => 'onu_mac',

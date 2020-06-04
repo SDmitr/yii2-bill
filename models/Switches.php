@@ -283,44 +283,47 @@ class Switches extends \yii\db\ActiveRecord
     public function setFdb()
     {
         $result = array();
-        if (!empty($this->fdb)) {
-            $result = @unserialize($this->fdb);
-        }
+        if ($this->vendor != 'Huawei') {
 
-        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
-        $session->oid_increasing_check = false;
+            if (!empty($this->fdb)) {
+                $result = @unserialize($this->fdb);
+            }
 
-        if (!empty($this->fdbOid[$this->vendor])) {
-            $oid = $this->fdbOid[$this->vendor];
-        } else {
-            $oid = $this->fdbOid['Unknown'];
-        }
+            $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
+            $session->oid_increasing_check = false;
 
-        $fdb = @$session->walk($oid);
+            if (!empty($this->fdbOid[$this->vendor])) {
+                $oid = $this->fdbOid[$this->vendor];
+            } else {
+                $oid = $this->fdbOid['Unknown'];
+            }
 
-        if (is_array($fdb)) {
-            $result = array();
-            foreach ($fdb as $oid => $interface) {
-                $components = explode('.', $oid);
-                $macArray = array_slice($components, -6, 6);
+            $fdb = @$session->walk($oid);
 
-                $mac = '';
-                foreach ($macArray as $value) {
+            if (is_array($fdb)) {
+                $result = array();
+                foreach ($fdb as $oid => $interface) {
+                    $components = explode('.', $oid);
+                    $macArray = array_slice($components, -6, 6);
 
-                    $octet = dechex($value);
-                    if (strlen($octet) == 1) {
-                        $octet = '0' . $octet;
+                    $mac = '';
+                    foreach ($macArray as $value) {
+
+                        $octet = dechex($value);
+                        if (strlen($octet) == 1) {
+                            $octet = '0' . $octet;
+                        }
+
+                        $mac .= strtolower($octet);
                     }
 
-                    $mac .= strtolower($octet);
+                    $interface = preg_replace('/\D/', '', $interface);
+
+                    $result[$mac] = $interface;
                 }
-
-                $interface = preg_replace('/\D/', '', $interface);
-
-                $result[$mac] = $interface;
             }
+            $session->close();
         }
-        $session->close();
         $this->fdb = @serialize($result);
     }
 

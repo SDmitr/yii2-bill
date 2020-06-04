@@ -135,16 +135,67 @@ elseif (count($interfaces) >= 24)
             ],
             [
                 'attribute' => 'interface',
+//                'format' => 'raw',
+//                'value' => function ($model) {
+//                    $switch = $model->switches;
+//                    if($switch !== null) {
+//                        $interfaces = unserialize($switch->interfaces);
+//                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
+//                        return $interfaceName;
+//                    }
+//                    return false;
+//                },
+//                'filter' => false,
+                'contentOptions' => [
+                    'class' => 'text-nowrap',
+                    'style' => 'width: 120px;'
+                ]
+            ],
+            [
+                'attribute' => 'onu',
                 'format' => 'raw',
                 'value' => function ($model) {
                     $switch = $model->switches;
                     if($switch !== null) {
+                        $macOnu = '';
                         $interfaces = unserialize($switch->interfaces);
-                        $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
-                        return $interfaceName;
+
+                        foreach ($interfaces as $key => $interface) {
+                            if (strtolower($interface['name']) == strtolower($model->interface)) {
+                                $interfaceId = $key;
+                                break;
+                            }
+                        }
+
+                        if (!empty($interfaceId)) {
+                            $macOnu = isset($interfaces[$interfaceId]['onu']) ? $interfaces[$interfaceId]['onu'] : '';
+                        }
+                        return Html::a(
+                            Html::encode($macOnu),
+                            Url::to(['pon/view', 'id' => $macOnu ]),
+                            ['title' => $macOnu , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
+                        );
                     }
                     return false;
                 },
+                'visible' => function ($model) {
+                    $switch = $model->switches;
+                    if($switch !== null) {
+                        $interfaces = unserialize($switch->interfaces);
+                        foreach ($interfaces as $key => $interface) {
+                            if (strtolower($interface['name']) == strtolower($model->interface)) {
+                                $interfaceId = $key;
+                                break;
+                            }
+                        }
+                       if (!empty($interfaceId)) {
+                           return !empty($interfaces[$interfaceId]['onu']) ? true : false;
+                       }
+                    }
+                    return false;
+                },
+                'filter' => false,
+                'enableSorting' => false
             ],
             [
                 'attribute' => 'client.num',
@@ -168,11 +219,6 @@ elseif (count($interfaces) >= 24)
             ],
             'ip',
             'mac',
-            [
-                'attribute' => 'onu_mac',
-                'format' => 'raw',
-                'value' => function ($model) { return Html::a(Html::encode($model->onu_mac), Url::to(['pon/view', 'id' => $model->onu_mac ]), ['data-pjax' => 0]); },
-            ],
             Yii::$app->user->can('statusInet') ?
                 [
                     'class' => '\dixonstarter\togglecolumn\ToggleColumn',

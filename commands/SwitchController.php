@@ -6,27 +6,35 @@ use Yii;
 use yii\console\Controller;
 use app\models\Switches;
 
-class SwitchController extends Controller {
+/**
+ * Class SwitchController
+ * @package app\commands
+ */
+class SwitchController extends Controller
+{
 
-    public function actionUpdate() {
+    /**
+     *
+     */
+    public function actionUpdate()
+    {
 
         $start = time();
         $devices = Yii::$app->params['managementNetwork'];
 
         $subnet = long2ip(ip2long($devices['subnet']) & ip2long($devices['mask']));
         $mask = $devices['mask'];
-        $broadcast = long2ip(ip2long($subnet) | ~ip2long($mask)) ;
+        $broadcast = long2ip(ip2long($subnet) | ~ip2long($mask));
 
         $first_ip = ip2long($subnet) + 10;
         $last_ip = ip2long($broadcast) - 170;
-        
-        for ($address = $first_ip; $address <= ip2long('192.168.0.150'); $address++ ) {
+
+        for ($address = $first_ip; $address <= ip2long('192.168.0.150'); $address++) {
             try {
                 $ip = long2ip($address);
                 $switch = Switches::findOne(array('ip' => $ip));
 
-                if (empty($switch->id))
-                {
+                if (empty($switch->id)) {
                     $switch = new Switches();
                     $switch->aton = ip2long($ip);
                     $switch->ip = $ip;

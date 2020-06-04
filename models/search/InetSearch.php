@@ -101,7 +101,6 @@ class InetSearch extends Inet
             '{{%inet}}.id' => $this->id,
             '{{%inet}}.num' => $this->num,
             '{{%inet}}.aton' => $this->aton,
-            '{{%inet}}.interface' => $this->interface,
             '{{%inet}}.tarif_id' => $this->tarif_id,
             '{{%inet}}.status_id' => $this->status_id,
             '{{%inet}}.switch'  => $this->switch
@@ -113,6 +112,7 @@ class InetSearch extends Inet
         $query->andFilterWhere(['like', '{{%inet}}.ip', $this->ip])
             ->andFilterWhere(['like', '{{%inet}}.mac', $this->mac])
 //            ->andFilterWhere(['like', '{{%inet}}.switch', $this->switch])
+            ->andFilterWhere(['like', '{{%inet}}.interface', $this->interface])
             ->andFilterWhere(['like', '{{%inet}}.onu_mac', $this->onu_mac])
 //            ->andFilterWhere(['like', '{{%inet}}.num', $this->num])
             ->andFilterWhere(['like', '{{%inet}}.date_on', $this->date_on])

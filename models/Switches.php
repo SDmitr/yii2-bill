@@ -206,7 +206,7 @@ class Switches extends \yii\db\ActiveRecord
     {
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
-        $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
+        $status = @$session->get('1.3.6.1.2.1.2.2.1.7.' . $id);
         $status = preg_replace('/\D/', '', $status);
         return $status;
     }

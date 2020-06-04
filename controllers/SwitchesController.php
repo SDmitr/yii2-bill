@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\search\InetSearch;
 use app\models\search\SwitchesSearch;
 use app\models\Switches;
 use Yii;
@@ -13,7 +14,8 @@ use app\models\Inet;
 use yii\data\ActiveDataProvider;
 
 /**
- * SwitchesController implements the CRUD actions for Switches model.
+ * Class SwitchesController
+ * @package app\controllers
  */
 class SwitchesController extends Controller
 {
@@ -70,15 +72,17 @@ class SwitchesController extends Controller
         $searchModel = new SwitchesSearch();
         $filter = Yii::$app->request->queryParams;
         if (count($filter) <= 1) {
-            $filter = Yii::$app->session['switchesparams'];
-            if(isset(Yii::$app->session['switchesparams']['page']))
-                $_GET['page'] = Yii::$app->session['switchesparams']['page'];
+            $filter = Yii::$app->session['switches-params'];
+            if (isset(Yii::$app->session['switches-params']['page']))
+                $_GET['page'] = Yii::$app->session['switches-params']['page'];
+            if (isset(Yii::$app->session['switches-params']['sort']))
+                $_GET['sort'] = Yii::$app->session['switches-params']['sort'];
         } else {
-            Yii::$app->session['switchesparams'] = $filter;
+            Yii::$app->session['switches-params'] = $filter;
         }
 
         $dataProvider = $searchModel->search($filter);
-        $dataProvider->pagination->pageSizeLimit =[1, 1000000];
+        $dataProvider->pagination->pageSizeLimit = [1, 1000000];
         $dataProvider->pagination->defaultPageSize = 1000000;
 
         return $this->render('index', [
@@ -87,43 +91,52 @@ class SwitchesController extends Controller
         ]);
     }
 
-
     /**
      * Displays a single Switches model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
         $model = $this->findModel($id);
         $interfaces = $model->getInterfacesStatus();
+        $filter = Yii::$app->request->queryParams;
 
-        $inetQuery = Inet::find()->where(['switch' => $id]);
+        if (count($filter) <= 1) {
+            $filter = Yii::$app->session['switches-view-params'];
+            if (isset(Yii::$app->session['switches-view-params']['page']))
+                $_GET['page'] = Yii::$app->session['switches-view-params']['page'];
+            if (isset(Yii::$app->session['switches-view-params']['sort']))
+                $_GET['sort'] = Yii::$app->session['switches-view-params']['sort'];
+        } else {
+            Yii::$app->session['switches-view-params'] = $filter;
+        }
+        $filter['InetSearch']['switch'] = $model->ip;
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $inetQuery,
-            'sort' => [
-                'defaultOrder' => [
-                    'interface' => SORT_ASC,
-                ]
-            ],
+        $searchModel = new InetSearch();
+        $dataProvider = $searchModel->search($filter);
+        $dataProvider->pagination->pageSizeLimit = [1, 1000000];
+        $dataProvider->pagination->defaultPageSize = 1000000;
+        $dataProvider->setSort([
+            'defaultOrder' => [
+                'interface' => SORT_DESC
+            ]
         ]);
-        $dataProvider->query->all();
 
         $interfacesDown = 0;
-        foreach ($interfaces as $interface)
-        {
-            if ($interface['status'] == Switches::STATUS_DOWN)
-            {
+        foreach ($interfaces as $interface) {
+            if ($interface['status'] == Switches::STATUS_DOWN) {
                 $interfacesDown++;
             }
         }
-                
+
         return $this->render('view', [
             'model' => $model,
             'interfaces' => $interfaces,
             'power' => count($interfaces) > $interfacesDown ? true : false,
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 

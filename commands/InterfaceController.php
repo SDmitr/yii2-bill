@@ -39,17 +39,10 @@ class InterfaceController extends Controller
                     if (count($switch) == 4) {
                         $inet->switch = $switch['ip'];
                         $inet->interface = $switch['interface_name'];
-
-                        if ($inet->save()) {
-                            echo 'Inet: ' . $inet->id . ' mac: ' . $inet->mac . ' switch: ' . $switch['id'] . ' interface: ' . $switch['interface'] . "\n";
-                        } else {
-                            $error = array_values($inet->getFirstErrors());
-                            throw new \Exception ($error[0]);
-                        }
+                        $inet->save();
                     }
                 }
             } catch (\Exception $e) {
-                echo $e->getMessage() . "\n";
             }
             $i++;
             Console::updateProgress($i, count($inets));

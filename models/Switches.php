@@ -41,6 +41,7 @@ class Switches extends \yii\db\ActiveRecord
         'ROS'           => '1.3.6.1.2.1.17.1.1.0',
         'Edge-core'     => '1.3.6.1.2.1.17.1.1.0',
         'BDCOM'         => '1.3.6.1.2.1.17.1.1.0',
+        'DCN S4200'     => '1.3.6.1.2.1.17.1.1.0',
         'Unknown'       => '1.3.6.1.2.1.17.1.1.0',
     );
 
@@ -56,6 +57,7 @@ class Switches extends \yii\db\ActiveRecord
         'ROS'           => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'Edge-core'     => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'BDCOM'         => '1.3.6.1.4.1.3320.152.1.1.1',
+        'DCN S4200'     => '1.3.6.1.2.1.17.7.1.2.2.1.2',
         'Unknown'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
     );
 
@@ -273,6 +275,8 @@ class Switches extends \yii\db\ActiveRecord
             $result = 'Foxgate S6008';
         } else if (strpos($system, 'BDCOM')) {
             $result = 'BDCOM';
+        } else if (strpos($system, 'S4200')) {
+            $result = 'DCN S4200';
         }
         $this->vendor = $result;
     }

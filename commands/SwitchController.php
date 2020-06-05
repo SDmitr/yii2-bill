@@ -5,6 +5,7 @@ namespace app\commands;
 use Yii;
 use yii\console\Controller;
 use app\models\Switches;
+use yii\helpers\Console;
 
 /**
  * Class SwitchController
@@ -27,9 +28,13 @@ class SwitchController extends Controller
         $broadcast = long2ip(ip2long($subnet) | ~ip2long($mask));
 
         $first_ip = ip2long($subnet) + 10;
-        $last_ip = ip2long($broadcast) - 170;
+        $last_ip = ip2long('192.168.0.150');
 
-        for ($address = $first_ip; $address <= ip2long('192.168.0.150'); $address++) {
+        $i = 0;
+        $switchCount = $last_ip - $first_ip;
+        Console::startProgress($i, $switchCount);
+
+        for ($address = $first_ip; $address <= $last_ip; $address++) {
             try {
                 $ip = long2ip($address);
                 $switch = Switches::findOne(array('ip' => $ip));
@@ -49,13 +54,14 @@ class SwitchController extends Controller
                 $switch->setFdb();
                 $switch->status_id = Switches::STATUS_UP;
                 $switch->save();
-                echo $ip . " производитель " . $switch->vendor . " название " . $switch->name . " кол-во портов " . $switch->interfaces . "\n";
             } catch (\Exception $e) {
                 $switch->status_id = Switches::STATUS_DOWN;
                 $switch->save();
-                echo $e->getMessage() . "\n";
             }
+            $i++;
+            Console::updateProgress($i, $switchCount);
         }
+        Console::endProgress();
         $stop = time();
         echo 'Execute time: ' . date('H:i:s', ($stop - $start)) . "\n";
     }

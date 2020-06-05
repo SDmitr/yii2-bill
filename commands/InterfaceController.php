@@ -6,6 +6,7 @@ use Yii;
 use yii\console\Controller;
 use app\models\Switches;
 use app\models\Inet;
+use yii\helpers\Console;
 
 /**
  * Class InterfaceController
@@ -25,6 +26,9 @@ class InterfaceController extends Controller
     {
         $inets = Inet::find()->all();
         $this->switches = Switches::find()->all();
+
+        $i = 0;
+        Console::startProgress($i, count($inets));
 
         foreach ($inets as $inet) {
             try {
@@ -47,7 +51,10 @@ class InterfaceController extends Controller
             } catch (\Exception $e) {
                 echo $e->getMessage() . "\n";
             }
+            $i++;
+            Console::updateProgress($i, count($inets));
         }
+        Console::endProgress();
     }
 
     /**

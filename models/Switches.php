@@ -2,9 +2,20 @@
 
 namespace app\models;
 
+use app\models\switches\Bdcom;
+use app\models\switches\Dcn;
+use app\models\switches\FoxgateS;
 use Yii;
 use \SNMP;
-use app\models\Status;
+
+use app\models\switches\Eltex;
+use app\models\switches\Nexthop;
+use app\models\switches\Edgecore;
+use app\models\switches\Cisco;
+use app\models\switches\Foxgate;
+use app\models\switches\Huawei;
+use app\models\switches\Nba;
+use app\models\switches\Raisecom;
 
 /**
  * This is the model class for table "switches".
@@ -29,37 +40,17 @@ class Switches extends \yii\db\ActiveRecord
     const INTERFACE_ACCESS = 1;
     const INTERFACE_TRUNK = 2;
 
-    /**
-     * @var array
-     */
-    private $localMacOid = array(
-        'Nexthop'       => '1.3.6.1.2.1.17.1.1.0',
-        'Foxgate'       => '1.3.6.1.2.1.17.1.1.0',
-        'Huawei'        => '1.3.6.1.2.1.17.1.1.0',
-        'Foxgate S6008' => '1.3.6.1.2.1.17.1.1.0',
-        'Cisco'         => '1.3.6.1.2.1.17.1.1.0',
-        'ROS'           => '1.3.6.1.2.1.17.1.1.0',
-        'Edge-core'     => '1.3.6.1.2.1.17.1.1.0',
-        'BDCOM'         => '1.3.6.1.2.1.17.1.1.0',
-        'DCN S4200'     => '1.3.6.1.2.1.17.1.1.0',
-        'Unknown'       => '1.3.6.1.2.1.17.1.1.0',
-    );
+    const OID_SYSTEM = '1.3.6.1.2.1.1.1.0';
+    const OID_NAME = '1.3.6.1.2.1.1.5.0';
+    const OID_INTERFACES = '1.3.6.1.2.1.2.2.1.3';
+    const OID_INTERFACE_NAME = '1.3.6.1.2.1.2.2.1.2.';
+    const OID_INTERFACE_STATUS = '1.3.6.1.2.1.2.2.1.8.';
+    const OID_INTERFACE_ADMIN_STATUS = '1.3.6.1.2.1.2.2.1.7.';
+    const OID_INTERFACE_TYPE = '1.3.6.1.2.1.2.2.1.3.';
+    const OID_INTERFACE_VLAN_MODE = '1.3.6.1.2.1.17.7.1.4.5.1.1.';
+    const OID_FDB = '1.3.6.1.2.1.17.7.1.2.2.1.2';
 
-    /**
-     * @var array
-     */
-    private $fdbOid = array(
-        'Nexthop'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-        'Foxgate'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-        'Huawei'        => '1.3.6.1.2.1.17.4.3.1.2',
-        'Foxgate S6008' => '1.3.6.1.2.1.17.7.1.2.3.1.2',
-        'Cisco'         => '1.3.6.1.2.1.17.7.1.2.3.1.2',
-        'ROS'           => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-        'Edge-core'     => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-        'BDCOM'         => '1.3.6.1.4.1.3320.152.1.1.1',
-        'DCN S4200'     => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-        'Unknown'       => '1.3.6.1.2.1.17.7.1.2.2.1.2',
-    );
+    public $vendor = 'Unknown';
 
     /**
      * @inheritdoc
@@ -93,11 +84,50 @@ class Switches extends \yii\db\ActiveRecord
             'aton' => 'Aton',
             'ip' => 'IP-адрес',
             'interfaces' => 'Интерфейсы',
-	    'onus' => 'ONU',
+	        'onus' => 'ONU',
             'fdb' => 'MAC-таблица',
             'status_id' => 'Статус'
         ];
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function getSwitchEntity($ip)
+    {
+        $session = new SNMP(SNMP::VERSION_2c, $ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
+        $session->oid_increasing_check = false;
+        $system = @$session->get(static::OID_SYSTEM);
+        if ($session->getError()) throw new \Exception ($session->getError());
+
+        if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0 || strpos($system, 'Internetwork Operating System')) {
+            $model = new Nexthop();
+        } elseif (strpos($system, 'MES')) {
+            $model = new Eltex();
+        } elseif (strpos($system, 'ES')) {
+            $model = new Edgecore();
+        } elseif (strpos($system, 'Huawei')) {
+            $model = new Huawei();
+        } elseif (strpos($system, 'S62')) {
+            $model = new Foxgate();
+        } elseif (strpos($system, 'Cisco')) {
+            $model = new Cisco();
+        } elseif (strpos($system, 'ROS')) {
+            $model = new Raisecom();
+        } elseif (strpos($system, 'NBA')) {
+            $model = new Nba();
+        } elseif (strpos($system, 'Layer 2 Management Switch')) {
+            $model = new FoxgateS();
+        } elseif (strpos($system, 'BDCOM')) {
+            $model = new Bdcom();
+        } elseif (strpos($system, 'S4200')) {
+            $model = new Dcn();
+        } else {
+            $model = $this;
+        }
+        return $model;
+    }
+
 
     /**
      * @return string
@@ -107,7 +137,7 @@ class Switches extends \yii\db\ActiveRecord
     {
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
-        $string = @$session->get("1.3.6.1.2.1.1.5.0");
+        $string = @$session->get(static::OID_NAME);
         if ($session->getError()) throw new \Exception ($session->getError());
 
         preg_match('~\w+\:\s\"(\w+)\"~', $string, $switchName);
@@ -161,20 +191,11 @@ class Switches extends \yii\db\ActiveRecord
      */
     public function setInterfaces()
     {
-        $result = array();
-        if (!empty($this->interfaces)) {
-            $result = @unserialize($this->interfaces);
-        }
+        $result = empty($this->interfaces) ? array() : @unserialize($this->interfaces);
 
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 1000000, 1);
         $session->oid_increasing_check = false;
-
-        if ($this->vendor == 'Eltex') {
-            $interfaces = @$session->walk('1.0.8802.1.1.1.1.1.2.1.2');
-        } else {
-            $interfaces = @$session->walk('1.3.6.1.2.1.2.2.1.3');
-        }
-
+        $interfaces = @$session->walk(static::OID_INTERFACES);
         if ($session->getError()) throw new \Exception ($session->getError());
 
         if (!empty($interfaces)) {
@@ -183,10 +204,10 @@ class Switches extends \yii\db\ActiveRecord
                 $components = explode('.', $oid);
                 $id = array_pop($components);
 
-                $interfaceType = @$session->get('1.3.6.1.2.1.2.2.1.3.' . $id);
+                $interfaceType = @$session->get( static::OID_INTERFACE_TYPE . $id);
                 $interfaceType = preg_replace('/.+\:/', '', $interfaceType);
                 if ($interfaceType == 6 || $interfaceType == 1) {
-                    $name = @$session->get('1.3.6.1.2.1.2.2.1.2.' . $id);
+                    $name = @$session->get(static::OID_INTERFACE_NAME . $id);
                     $onu = @$session->get('1.3.6.1.4.1.3320.101.10.1.1.3.' . $id);
                     $macOnu = strtolower(str_replace('Hex-STRING: ', '', $onu));
                     $macOnu = preg_replace('/\s+/', ':', trim($macOnu));
@@ -211,7 +232,7 @@ class Switches extends \yii\db\ActiveRecord
     {
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
-        $status = @$session->get('1.3.6.1.2.1.2.2.1.8.' . $id);
+        $status = @$session->get(static::OID_INTERFACE_STATUS. $id);
         $status = preg_replace('/\D/', '', $status);
         return $status;
     }
@@ -224,7 +245,7 @@ class Switches extends \yii\db\ActiveRecord
     {
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
-        $status = @$session->get('1.3.6.1.2.1.2.2.1.7.' . $id);
+        $status = @$session->get(static::OID_INTERFACE_ADMIN_STATUS . $id);
         $status = preg_replace('/\D/', '', $status);
         return $status;
     }
@@ -238,7 +259,7 @@ class Switches extends \yii\db\ActiveRecord
         $result = self::INTERFACE_TRUNK;
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
-        $vlan = @$session->get('1.3.6.1.2.1.17.7.1.4.5.1.1.' . $id);
+        $vlan = @$session->get(static::OID_INTERFACE_VLAN_MODE . $id);
         preg_match('~\w+\:\s(\w+)~', $vlan, $vlanMode);
         if (isset($vlanMode[1]) && $vlanMode[1] > 1 && $vlanMode[1] != 1000 && $vlanMode[1] != 999) {
             $result = self::INTERFACE_ACCESS;
@@ -250,93 +271,34 @@ class Switches extends \yii\db\ActiveRecord
     }
 
     /**
-     * @throws \Exception
-     */
-    public function setVendor()
-    {
-        if (empty($this->vendor)) {
-            $result = 'Unknown';
-        } else {
-            $result = $this->vendor;
-        }
-        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
-        $session->oid_increasing_check = false;
-        $system = @$session->get("1.3.6.1.2.1.1.1.0");
-        if ($session->getError()) throw new \Exception ($session->getError());
-
-        if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0 || strpos($system, 'Internetwork Operating System')) {
-            $result = 'Nexthop';
-        } elseif (strpos($system, 'MES')) {
-            $result = 'Eltex';
-        } elseif (strpos($system, 'ES')) {
-            $result = 'Edge-core';
-        } elseif (strpos($system, 'Huawei')) {
-            $result = 'Huawei';
-        } elseif (strpos($system, 'S62')) {
-            $result = 'Foxgate';
-        } elseif (strpos($system, 'Cisco')) {
-            $result = 'Cisco';
-        } elseif (strpos($system, 'ROS')) {
-            $result = 'ROS';
-        } elseif (strpos($system, 'NBA')) {
-            $result = 'NBA';
-        } elseif (strpos($system, 'Layer 2 Management Switch')) {
-            $result = 'Foxgate S6008';
-        } elseif (strpos($system, 'BDCOM')) {
-            $result = 'BDCOM';
-        } elseif (strpos($system, 'S4200')) {
-            $result = 'DCN S4200';
-        }
-        $this->vendor = $result;
-    }
-
-    /**
      *
      */
     public function setFdb()
     {
-        $result = array();
-        if ($this->vendor != 'Huawei') {
+        $result = empty($this->fdb) ? array() : @unserialize($this->fdb);
+        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
+        $session->oid_increasing_check = false;
+        $fdb = @$session->walk(static::OID_FDB);
 
-            if (!empty($this->fdb)) {
-                $result = @unserialize($this->fdb);
-            }
-
-            $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
-            $session->oid_increasing_check = false;
-
-            if (!empty($this->fdbOid[$this->vendor])) {
-                $oid = $this->fdbOid[$this->vendor];
-            } else {
-                $oid = $this->fdbOid['Unknown'];
-            }
-
-            $fdb = @$session->walk($oid);
-
-            if (is_array($fdb)) {
-                $result = array();
-                foreach ($fdb as $oid => $interface) {
-                    $components = explode('.', $oid);
-                    $macArray = array_slice($components, -6, 6);
-
-                    $mac = '';
-                    foreach ($macArray as $value) {
-
-                        $octet = dechex($value);
-                        if (strlen($octet) == 1) {
-                            $octet = '0' . $octet;
-                        }
-
-                        $mac .= strtolower($octet);
+        if (is_array($fdb)) {
+            $result = array();
+            foreach ($fdb as $oid => $interface) {
+                $components = explode('.', $oid);
+                $macArray = array_slice($components, -6, 6);
+                $mac = '';
+                foreach ($macArray as $value) {
+                    $octet = dechex($value);
+                    if (strlen($octet) == 1) {
+                        $octet = '0' . $octet;
                     }
-
-                    $interface = preg_replace('/\D/', '', $interface);
-
-                    $result[$mac] = $interface;
+                    $mac .= strtolower($octet);
                 }
+
+                $interface = preg_replace('/\D/', '', $interface);
+                $result[$mac] = $interface;
             }
-            $session->close();
         }
+        $session->close();
         $this->fdb = @serialize($result);
     }
 
@@ -346,5 +308,14 @@ class Switches extends \yii\db\ActiveRecord
     public function getStatus()
     {
         return $this->hasOne(Status::className(), ['id' => 'status_id']);
+    }
+
+    /**
+     * @param $ip
+     * @return mixed
+     */
+    public function findByIp($ip)
+    {
+        return static::findOne(array('ip' => $ip));
     }
 }

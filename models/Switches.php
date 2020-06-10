@@ -93,7 +93,7 @@ class Switches extends \yii\db\ActiveRecord
     /**
      * @throws \Exception
      */
-    public function getSwitchEntity($ip)
+    public static function getSwitchEntity($ip)
     {
         $session = new SNMP(SNMP::VERSION_2c, $ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
@@ -123,7 +123,7 @@ class Switches extends \yii\db\ActiveRecord
         } elseif (strpos($system, 'S4200')) {
             $model = new Dcn();
         } else {
-            $model = $this;
+            $model = new Switches();
         }
         return $model;
     }

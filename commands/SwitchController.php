@@ -37,10 +37,8 @@ class SwitchController extends Controller
         for ($address = $first_ip; $address <= $last_ip; $address++) {
             try {
                 $ip = long2ip($address);
-                $model = new Switches();
-                $switch = $model->getSwitchEntity($ip);
-                $switch->findByIp($ip);
-
+                $model = Switches::getSwitchEntity($ip);
+                $switch = $model->findByIp($ip);
                 $switch->ip = $ip;
                 $switch->aton = ip2long($ip);
                 $switch->status_id = Switches::STATUS_UP;

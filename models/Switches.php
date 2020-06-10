@@ -155,7 +155,6 @@ class Switches extends \yii\db\ActiveRecord
         } else {
             $name = $switchName[1];
         }
-        $session->close();
         $this->name = $name;
     }
 
@@ -189,8 +188,6 @@ class Switches extends \yii\db\ActiveRecord
                 }
             }
         }
-
-        $session->close();
         return $result;
     }
 
@@ -228,7 +225,6 @@ class Switches extends \yii\db\ActiveRecord
             }
         }
 
-        $session->close();
         $this->interfaces = @serialize($result);
     }
 
@@ -306,7 +302,6 @@ class Switches extends \yii\db\ActiveRecord
                 $result[$mac] = $interface;
             }
         }
-        $session->close();
         $this->fdb = @serialize($result);
     }
 

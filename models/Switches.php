@@ -50,7 +50,7 @@ class Switches extends \yii\db\ActiveRecord
     const OID_INTERFACE_VLAN_MODE = '1.3.6.1.2.1.17.7.1.4.5.1.1.';
     const OID_FDB = '1.3.6.1.2.1.17.7.1.2.2.1.2';
 
-    public $vendor = 'Unknown';
+    const VENDOR = 'Unknown';
 
     /**
      * @inheritdoc
@@ -126,6 +126,14 @@ class Switches extends \yii\db\ActiveRecord
             $model = new Switches();
         }
         return $model;
+    }
+
+    /**
+     *
+     */
+    public function setVendor()
+    {
+        $this->vendor = static::VENDOR;
     }
 
 

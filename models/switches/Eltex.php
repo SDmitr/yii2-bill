@@ -15,5 +15,5 @@ class Eltex extends Switches
 
     const OID_INTERFACES = '1.0.8802.1.1.1.1.1.2.1.2';
 
-    public $vendor = 'Eltex';
+    const VENDOR = 'Eltex';
 }

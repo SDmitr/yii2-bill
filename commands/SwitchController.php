@@ -42,6 +42,7 @@ class SwitchController extends Controller
                 $switch->ip = $ip;
                 $switch->aton = ip2long($ip);
                 $switch->status_id = Switches::STATUS_UP;
+                $switch->setVendor();
                 $switch->setInterfaces();
                 $switch->setSwitchName();
                 $switch->setFdb();

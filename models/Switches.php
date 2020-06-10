@@ -168,7 +168,12 @@ class Switches extends \yii\db\ActiveRecord
 
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 1000000, 1);
         $session->oid_increasing_check = false;
-        $interfaces = @$session->walk('1.3.6.1.2.1.2.2.1.3');
+
+        if ($this->vendor == 'Eltex') {
+            $interfaces = @$session->walk('1.0.8802.1.1.1.1.1.2.1.2');
+        } else {
+            $interfaces = @$session->walk('1.3.6.1.2.1.2.2.1.3');
+        }
 
         if ($session->getError()) throw new \Exception ($session->getError());
 
@@ -259,23 +264,25 @@ class Switches extends \yii\db\ActiveRecord
 
         if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0 || strpos($system, 'Internetwork Operating System')) {
             $result = 'Nexthop';
-        } else if (strpos($system, 'ES')) {
+        } elseif (strpos($system, 'MES')) {
+            $result = 'Eltex';
+        } elseif (strpos($system, 'ES')) {
             $result = 'Edge-core';
-        } else if (strpos($system, 'Huawei')) {
+        } elseif (strpos($system, 'Huawei')) {
             $result = 'Huawei';
-        } else if (strpos($system, 'S62')) {
+        } elseif (strpos($system, 'S62')) {
             $result = 'Foxgate';
-        } else if (strpos($system, 'Cisco')) {
+        } elseif (strpos($system, 'Cisco')) {
             $result = 'Cisco';
-        } else if (strpos($system, 'ROS')) {
+        } elseif (strpos($system, 'ROS')) {
             $result = 'ROS';
-        } else if (strpos($system, 'NBA')) {
+        } elseif (strpos($system, 'NBA')) {
             $result = 'NBA';
-        } else if (strpos($system, 'Layer 2 Management Switch')) {
+        } elseif (strpos($system, 'Layer 2 Management Switch')) {
             $result = 'Foxgate S6008';
-        } else if (strpos($system, 'BDCOM')) {
+        } elseif (strpos($system, 'BDCOM')) {
             $result = 'BDCOM';
-        } else if (strpos($system, 'S4200')) {
+        } elseif (strpos($system, 'S4200')) {
             $result = 'DCN S4200';
         }
         $this->vendor = $result;

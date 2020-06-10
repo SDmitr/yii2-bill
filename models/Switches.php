@@ -182,7 +182,9 @@ class Switches extends \yii\db\ActiveRecord
             foreach ($interfaces as $oid => $interface) {
                 $components = explode('.', $oid);
                 $id = array_pop($components);
-                $interfaceType = preg_replace('/\D/', '', $interface);
+
+                $interfaceType = @$session->get('1.3.6.1.2.1.2.2.1.3.' . $id);
+                $interfaceType = preg_replace('/.+\:/', '', $interfaceType);
                 if ($interfaceType == 6 || $interfaceType == 1) {
                     $name = @$session->get('1.3.6.1.2.1.2.2.1.2.' . $id);
                     $onu = @$session->get('1.3.6.1.4.1.3320.101.10.1.1.3.' . $id);

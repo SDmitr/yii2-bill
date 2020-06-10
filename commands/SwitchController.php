@@ -43,13 +43,15 @@ class SwitchController extends Controller
                 $switch->aton = ip2long($ip);
                 $switch->status_id = Switches::STATUS_UP;
                 $switch->setVendor();
-                $switch->setInterfaces();
                 $switch->setSwitchName();
+                $switch->setInterfaces();
                 $switch->setFdb();
                 $switch->save();
             } catch (\Exception $e) {
-                $switch->status_id = Switches::STATUS_DOWN;
-                $switch->save();
+                if ($switch->id) {
+                    $switch->status_id = Switches::STATUS_DOWN;
+                    $switch->save();
+                }
             }
             $i++;
             Console::updateProgress($i, $switchCount);

@@ -202,7 +202,6 @@ class Switches extends \yii\db\ActiveRecord
         $session->oid_increasing_check = false;
         $interfaces = @$session->walk(static::OID_INTERFACES);
         if ($session->getError()) throw new \Exception ($session->getError());
-        @$session->close();
 
         if (!empty($interfaces)) {
             $result = array();
@@ -225,6 +224,7 @@ class Switches extends \yii\db\ActiveRecord
                 }
             }
         }
+        @$session->close();
 
         $this->interfaces = @serialize($result);
     }

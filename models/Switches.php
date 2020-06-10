@@ -99,6 +99,7 @@ class Switches extends \yii\db\ActiveRecord
         $session->oid_increasing_check = false;
         $system = @$session->get(static::OID_SYSTEM);
         if ($session->getError()) throw new \Exception ($session->getError());
+        @$session->close();
 
         if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0 || strpos($system, 'Internetwork Operating System')) {
             $model = new Nexthop();
@@ -147,6 +148,7 @@ class Switches extends \yii\db\ActiveRecord
         $session->oid_increasing_check = false;
         $string = @$session->get(static::OID_NAME);
         if ($session->getError()) throw new \Exception ($session->getError());
+        @$session->close();
 
         preg_match('~\w+\:\s\"(\w+)\"~', $string, $switchName);
 
@@ -155,6 +157,7 @@ class Switches extends \yii\db\ActiveRecord
         } else {
             $name = $switchName[1];
         }
+
         $this->name = $name;
     }
 
@@ -164,10 +167,7 @@ class Switches extends \yii\db\ActiveRecord
     public function getInterfaces()
     {
         $result = array();
-        $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
-        $session->oid_increasing_check = false;
         $interfaces = @unserialize($this->interfaces);
-
         if (!empty($interfaces)) {
             foreach ($interfaces as $id => $item) {
                 if (isset($item['type']) && $item['type'] == 6) {
@@ -202,6 +202,7 @@ class Switches extends \yii\db\ActiveRecord
         $session->oid_increasing_check = false;
         $interfaces = @$session->walk(static::OID_INTERFACES);
         if ($session->getError()) throw new \Exception ($session->getError());
+        @$session->close();
 
         if (!empty($interfaces)) {
             $result = array();
@@ -237,6 +238,7 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $status = @$session->get(static::OID_INTERFACE_STATUS. $id);
+        @$session->close();
         $status = preg_replace('/\D/', '', $status);
         return $status;
     }
@@ -250,6 +252,7 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $status = @$session->get(static::OID_INTERFACE_ADMIN_STATUS . $id);
+        @$session->close();
         $status = preg_replace('/\D/', '', $status);
         return $status;
     }
@@ -264,6 +267,7 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $vlan = @$session->get(static::OID_INTERFACE_VLAN_MODE . $id);
+        @$session->close();
         preg_match('~\w+\:\s(\w+)~', $vlan, $vlanMode);
         if (isset($vlanMode[1]) && $vlanMode[1] > 1 && $vlanMode[1] != 1000 && $vlanMode[1] != 999) {
             $result = self::INTERFACE_ACCESS;
@@ -283,6 +287,7 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 60000000, 1);
         $session->oid_increasing_check = false;
         $fdb = @$session->walk(static::OID_FDB);
+        @$session->close();
 
         if (is_array($fdb)) {
             $result = array();

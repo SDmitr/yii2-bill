@@ -38,15 +38,17 @@ class SwitchController extends Controller
             try {
                 $ip = long2ip($address);
                 $model = Switches::getSwitchEntity($ip);
-                $switch = $model->findByIp($ip);
-                $switch->ip = $ip;
-                $switch->aton = ip2long($ip);
-                $switch->status_id = Switches::STATUS_UP;
-                $switch->setVendor();
-                $switch->setSwitchName();
-                $switch->setInterfaces();
-                $switch->setFdb();
-                $switch->save();
+                if ($model) {
+                    $switch = $model->findByIp($ip);
+                    $switch->ip = $ip;
+                    $switch->aton = ip2long($ip);
+                    $switch->status_id = Switches::STATUS_UP;
+                    $switch->setVendor();
+                    $switch->setSwitchName();
+                    $switch->setInterfaces();
+                    $switch->setFdb();
+                    $switch->save();
+                }
             } catch (\Exception $e) {
                 if (isset($switch) && $switch->id) {
                     $switch->status_id = Switches::STATUS_DOWN;

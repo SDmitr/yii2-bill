@@ -40,9 +40,10 @@ class InterfaceController extends Controller
                     $mac = strtolower(str_replace(':', '', $inet->mac));
                     $switch = $this->getSwitch($mac);
 
-                    if (count($switch) == 4) {
+                    if (count($switch) == 5) {
                         $inet->switch = $switch['ip'];
                         $inet->interface = $switch['interface_name'];
+                        $inet->onu = $switch['onu'];
                         $inet->save();
                     }
                 }
@@ -69,12 +70,13 @@ class InterfaceController extends Controller
                 if ($mac == $key
                     && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS
                     && $switch->status_id == Switches::STATUS_UP
-                    && (!in_array($interfaceTable[$interface]['name'], self::ONU_DISTR) && $switch->ip != '192.168.0.10')
+                    && !array_key_exists($interfaceTable[$interface]['onu'], Yii::$app->params['onuService'])
                 ) {
                     $result['id'] = $switch->id;
                     $result['ip'] = $switch->ip;
                     $result['interface'] = $interface;
                     $result['interface_name'] = $interfaceTable[$interface]['name'];
+                    $result['onu'] = $interfaceTable[$interface]['onu'];
                     return $result;
                 }
             }

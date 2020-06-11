@@ -213,13 +213,9 @@ class Switches extends \yii\db\ActiveRecord
                 $interfaceType = preg_replace('/.+\:/', '', $interfaceType);
                 if ($interfaceType == 6 || $interfaceType == 1) {
                     $name = @$session->get(static::OID_INTERFACE_NAME . $id);
-                    $onu = @$session->get('1.3.6.1.4.1.3320.101.10.1.1.3.' . $id);
-                    $macOnu = strtolower(str_replace('Hex-STRING: ', '', $onu));
-                    $macOnu = preg_replace('/\s+/', ':', trim($macOnu));
                     preg_match('~\w+\:\s\"(.+)\"~', $name, $interfaceName);
                     $result[$id]['name'] = !empty($interfaceName[1]) ? $interfaceName[1] : $id;
                     $result[$id]['type'] = $interfaceType;
-                    $result[$id]['onu'] = $macOnu;
                     $result[$id]['vlan_mode'] = $this->setVlanMode($id);
                 }
             }

@@ -105,7 +105,7 @@ class Switches extends \yii\db\ActiveRecord
             $model = new Nexthop();
         } elseif (strpos($system, 'MES')) {
             $model = new Eltex();
-        } elseif (strpos($system, 'ES')) {
+        } elseif (strpos($system, 'ES') || strpos($system, 'managed standalone switch')) {
             $model = new Edgecore();
         } elseif (strpos($system, 'Huawei')) {
             $model = new Huawei();

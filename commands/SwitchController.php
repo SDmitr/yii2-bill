@@ -53,6 +53,7 @@ class SwitchController extends Controller
                     $switch->save();
                 }
             }
+            unset($switch);
             $i++;
             Console::updateProgress($i, $switchCount);
         }

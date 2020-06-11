@@ -126,11 +126,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'interface',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        $switch = $model->switches;
-                        if($switch !== null) {
-                            $interfaces = unserialize($switch->interfaces);
-                            $interfaceName = isset($interfaces[$model->interface]['name']) ? $interfaces[$model->interface]['name'] : '';
-                            return $interfaceName;
+                        if($model->interface !== null) {
+                            return $model->interface;
                         }
                         return false;
                     },

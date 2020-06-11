@@ -170,11 +170,13 @@ elseif (count($interfaces) >= 24)
                         if (!empty($interfaceId)) {
                             $macOnu = isset($interfaces[$interfaceId]['onu']) ? $interfaces[$interfaceId]['onu'] : '';
                         }
-                        return Html::a(
-                            Html::encode($macOnu),
-                            Url::to(['pon/view', 'id' => $macOnu ]),
-                            ['title' => $macOnu , 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
-                        );
+                        if ($macOnu) {
+                            return Html::a(
+                                Html::encode($macOnu),
+                                Url::to(['pon/view', 'id' => $macOnu]),
+                                ['title' => $macOnu, 'data-pjax' => 0, 'class' => 'btn btn-default btn-xs btn-block']
+                            );
+                        }
                     }
                     return false;
                 },

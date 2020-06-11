@@ -98,7 +98,7 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $system = @$session->get(static::OID_SYSTEM);
-//        if ($session->getError()) throw new \Exception ($session->getError());
+        if ($session->getError()) throw new \Exception ($session->getError());
         @$session->close();
 
         if (strpos($system, 'NH-') || strpos($system, 'Hex-STRING') === 0 || strpos($system, 'Internetwork Operating System')) {
@@ -289,7 +289,7 @@ class Switches extends \yii\db\ActiveRecord
         $fdb = @$session->walk(static::OID_FDB);
         @$session->close();
 
-        if (is_array($fdb)) {
+        if ($fdb && is_array($fdb)) {
             $result = array();
             foreach ($fdb as $oid => $interface) {
                 $components = explode('.', $oid);

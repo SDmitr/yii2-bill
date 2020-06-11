@@ -48,7 +48,7 @@ class SwitchController extends Controller
                 $switch->setFdb();
                 $switch->save();
             } catch (\Exception $e) {
-                if ($switch->id) {
+                if ($switch && $switch->id) {
                     $switch->status_id = Switches::STATUS_DOWN;
                     $switch->save();
                 }

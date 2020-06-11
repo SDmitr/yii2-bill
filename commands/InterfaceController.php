@@ -14,6 +14,10 @@ use yii\helpers\Console;
  */
 class InterfaceController extends Controller
 {
+    const ONU_DISTR = array(
+        'EPON0/4:22',
+        'epon0/3:11'
+    );
     /**
      * @var array
      */
@@ -62,7 +66,11 @@ class InterfaceController extends Controller
             $interfaceTable = @unserialize($switch->interfaces);
 
             foreach ($macTable as $key => $interface) {
-                if ($mac == $key && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS && $switch->status_id == Switches::STATUS_UP) {
+                if ($mac == $key
+                    && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS
+                    && $switch->status_id == Switches::STATUS_UP
+                    && (!in_array($interfaceTable[$interface]['name'], self::ONU_DISTR) && $switch->ip != '192.168.0.10')
+                ) {
                     $result['id'] = $switch->id;
                     $result['ip'] = $switch->ip;
                     $result['interface'] = $interface;

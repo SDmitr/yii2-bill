@@ -104,21 +104,8 @@ $pageSize = PageSize::widget([
                 'value' => function ($model) {
                     $switch = $model->switches;
                     if($switch !== null) {
-                        $macOnu = '';
-                        $interfaces = unserialize($switch->interfaces);
-                        foreach ($interfaces as $key => $interface) {
-                            if (strtolower($interface['name']) == strtolower($model->interface)) {
-                                $interfaceId = $key;
-                                break;
-                            }
-                        }
-
-                        if (!empty($interfaceId)) {
-                            $macOnu = isset($interfaces[$interfaceId]['onu']) ? $interfaces[$interfaceId]['onu'] : '';
-                        }
-
-                        $link = empty($macOnu) ? Url::to(['switches/view', 'id' => $switch->id]) : Url::to(['pon/view', 'id' => $macOnu ]);
-                        $title = empty($macOnu) ? $switch->name : $macOnu;
+                        $link = Url::to(['switches/view', 'id' => $switch->id]);
+                        $title = $switch->name;
 
                         return Html::a(
                                 Html::encode($switch->ip),
@@ -143,11 +130,14 @@ $pageSize = PageSize::widget([
                 'attribute' => 'onu_mac',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    return Html::a(
+                    if ($model->onu_mac) {
+                        return Html::a(
                             Html::encode($model->onu_mac),
-                            Url::to(['pon/view', 'id' => $model->onu_mac ]),
+                            Url::to(['pon/view', 'id' => $model->onu_mac]),
                             ['data-pjax' => 0]
-                    );
+                        );
+                    }
+                    return false;
                 },
             ],
             [

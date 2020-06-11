@@ -14,10 +14,6 @@ use yii\helpers\Console;
  */
 class InterfaceController extends Controller
 {
-    const ONU_DISTR = array(
-        'EPON0/4:22',
-        'epon0/3:11'
-    );
     /**
      * @var array
      */

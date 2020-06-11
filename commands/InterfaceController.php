@@ -43,7 +43,7 @@ class InterfaceController extends Controller
                     if (count($switch) == 5) {
                         $inet->switch = $switch['ip'];
                         $inet->interface = $switch['interface_name'];
-                        $inet->onu = $switch['onu'];
+                        $inet->onu_mac = $switch['onu'];
                         $inet->save();
                     }
                 }

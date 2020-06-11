@@ -58,6 +58,8 @@ class InterfaceController extends Controller
     private function getSwitch($mac)
     {
         $result = array();
+        $onuService = Yii::$app->params['onuService'];
+
         foreach ($this->switches as $switch) {
             $macTable = @unserialize($switch->fdb);
             $interfaceTable = @unserialize($switch->interfaces);
@@ -66,13 +68,16 @@ class InterfaceController extends Controller
                 if ($mac == $key
                     && $this->getVlanMode($interfaceTable, $interface) == Switches::INTERFACE_ACCESS
                     && $switch->status_id == Switches::STATUS_UP
-                    && !array_key_exists($interfaceTable[$interface]['onu'], Yii::$app->params['onuService'])
                 ) {
+                    if (isset($interfaceTable[$interface]['onu']) && array_key_exists($interfaceTable[$interface]['onu'], $onuService)) {
+                        continue;
+                    }
+
                     $result['id'] = $switch->id;
                     $result['ip'] = $switch->ip;
                     $result['interface'] = $interface;
                     $result['interface_name'] = $interfaceTable[$interface]['name'];
-                    $result['onu'] = $interfaceTable[$interface]['onu'];
+                    $result['onu'] = isset($interfaceTable[$interface]['onu']) ? $interfaceTable[$interface]['onu'] : '';
                     return $result;
                 }
             }

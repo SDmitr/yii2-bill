@@ -40,6 +40,8 @@ class Switches extends \yii\db\ActiveRecord
     const INTERFACE_ACCESS = 1;
     const INTERFACE_TRUNK = 2;
 
+    const INTERFACE_TYPE = array(6);
+
     const OID_SYSTEM = '1.3.6.1.2.1.1.1.0';
     const OID_NAME = '1.3.6.1.2.1.1.5.0';
     const OID_INTERFACES = '1.3.6.1.2.1.2.2.1.3';
@@ -147,7 +149,6 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 500000, 1);
         $session->oid_increasing_check = false;
         $string = @$session->get(static::OID_NAME);
-//        if ($session->getError()) throw new \Exception ($session->getError());
         @$session->close();
 
         preg_match('~\w+\:\s\"(\w+)\"~', $string, $switchName);
@@ -201,7 +202,6 @@ class Switches extends \yii\db\ActiveRecord
         $session = new SNMP(SNMP::VERSION_2c, $this->ip, Yii::$app->params['managementNetwork']['snmpCommunity'], 1000000, 1);
         $session->oid_increasing_check = false;
         $interfaces = @$session->walk(static::OID_INTERFACES);
-//        if ($session->getError()) throw new \Exception ($session->getError());
 
         if (!empty($interfaces)) {
             $result = array();
@@ -211,7 +211,7 @@ class Switches extends \yii\db\ActiveRecord
 
                 $interfaceType = @$session->get( static::OID_INTERFACE_TYPE . $id);
                 $interfaceType = preg_replace('/.+\:/', '', $interfaceType);
-                if ($interfaceType == 6 || $interfaceType == 1) {
+                if (in_array($interfaceType, static::INTERFACE_TYPE)) {
                     $name = @$session->get(static::OID_INTERFACE_NAME . $id);
                     preg_match('~\w+\:\s\"(.+)\"~', $name, $interfaceName);
                     $result[$id]['name'] = !empty($interfaceName[1]) ? $interfaceName[1] : $id;

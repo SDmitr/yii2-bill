@@ -27,7 +27,7 @@ class SwitchController extends Controller
         $mask = $devices['mask'];
         $broadcast = long2ip(ip2long($subnet) | ~ip2long($mask));
 
-        $first_ip = ip2long($subnet) + 10;
+        $first_ip = ip2long($subnet) + 6;
         $last_ip = ip2long('192.168.0.150');
 
         $i = 0;
@@ -40,6 +40,9 @@ class SwitchController extends Controller
                 $model = Switches::getSwitchEntity($ip);
                 if ($model) {
                     $switch = $model->findByIp($ip);
+                    if (is_null($switch)) {
+                        $switch = $model;
+                    }
                     $switch->ip = $ip;
                     $switch->aton = ip2long($ip);
                     $switch->status_id = Switches::STATUS_UP;

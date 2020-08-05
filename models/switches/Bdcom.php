@@ -12,6 +12,8 @@ use app\models\Switches;
  */
 class Bdcom extends Switches
 {
+    const INTERFACE_TYPE = array(1, 6);
+
     const OID_FDB = '1.3.6.1.4.1.3320.152.1.1.1';
 
     const VENDOR = 'BDCOM';
@@ -36,7 +38,7 @@ class Bdcom extends Switches
 
                 $interfaceType = @$session->get( static::OID_INTERFACE_TYPE . $id);
                 $interfaceType = preg_replace('/.+\:/', '', $interfaceType);
-                if ($interfaceType == 6 || $interfaceType == 1) {
+                if (in_array($interfaceType, static::INTERFACE_TYPE)) {
                     $name = @$session->get(static::OID_INTERFACE_NAME . $id);
                     $onu = @$session->get('1.3.6.1.4.1.3320.101.10.1.1.3.' . $id);
                     $macOnu = strtolower(str_replace('Hex-STRING: ', '', $onu));

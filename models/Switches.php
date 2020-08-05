@@ -123,7 +123,7 @@ class Switches extends \yii\db\ActiveRecord
             $model = new FoxgateS();
         } elseif (strpos($system, 'BDCOM')) {
             $model = new Bdcom();
-        } elseif (strpos($system, 'S4200')) {
+        } elseif (strpos($system, 'S4200') || strpos($system, 'S4600')) {
             $model = new Dcn();
         } else {
             $model = new Switches();

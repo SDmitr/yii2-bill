@@ -74,11 +74,13 @@ class Log extends \yii\db\ActiveRecord
     
     public function add($description, $action, $level, $model)
     {
+        $date = Yii::$app->getFormatter()->asDatetime(time());
         $this->action = $action;
         $this->ip = $_SERVER['REMOTE_ADDR'];
         $this->user = isset(Yii::$app->user->getIdentity()->username) ? Yii::$app->user->getIdentity()->username : '';
         $this->description = $description;
         $this->level = $level;
+        $this->create_at = $date;
         
         if ($this->action == self::HACKING || $this->action == self::LOGIN) {
             $this->user = $model->attributes['username'];

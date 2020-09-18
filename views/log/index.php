@@ -99,8 +99,8 @@ $pageSize = PageSize::widget([
                     'format' => 'raw',
                     'filter' => false,
                     'value' => function ($model) {
-                        $after = !empty(@unserialize(base64_decode($model->after))) ? @unserialize(base64_decode($model->after)) : $model->after;
-                        $until = !empty(@unserialize(base64_decode($model->until))) ? @unserialize(base64_decode($model->until)) : $model->until;
+                        $after = !empty(@unserialize($model->after)) ? @unserialize($model->after) : $model->after;
+                        $until = !empty(@unserialize($model->until)) ? @unserialize($model->until) : $model->until;
                         $result = '';
                         if (!empty($after) && is_array($after)) {
                             foreach ($after as $key => $value) {
@@ -126,7 +126,7 @@ $pageSize = PageSize::widget([
                     'format' => 'raw',
                     'filter' => false,
                     'value' => function ($model) {
-                        $until = !empty(@unserialize(base64_decode($model->until))) ? @unserialize(base64_decode($model->until)) : $model->until;
+                        $until = !empty(@unserialize($model->until)) ? @unserialize($model->until) : $model->until;
                         $result = '';
                         if (!empty($until) && is_array($until)) {
                             foreach ($until as $key => $value) {

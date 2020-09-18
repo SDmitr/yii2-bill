@@ -84,17 +84,17 @@ class Log extends \yii\db\ActiveRecord
             $this->user = $model->attributes['username'];
         } else {
             if ($this->action != self::DELETE) {
-                $this->after = !empty($model->attributes) ? base64_encode(serialize($model->attributes)) : '';
+                $this->after = !empty($model->attributes) ? serialize($model->attributes) : '';
             }
             if ($this->action != self::CREATE) {
-                $this->until = !empty($model->oldAttributes) ? base64_encode(serialize($model->oldAttributes)) : '';
+                $this->until = !empty($model->oldAttributes) ? serialize($model->oldAttributes) : '';
             }
             if ($this->action == self::ENABLE || $this->action == self::DISABLE) {
                 $this->until = '';
-                $this->after = !empty($model->attributes) ? base64_encode(serialize($model->attributes)) : '';
+                $this->after = !empty($model->attributes) ? serialize($model->attributes) : '';
             }
             if ($this->action == self::DHCP) {
-                $this->after = !empty($model) ? base64_encode(serialize($model)) : '';
+                $this->after = !empty($model) ? serialize($model) : '';
             }
         }
         

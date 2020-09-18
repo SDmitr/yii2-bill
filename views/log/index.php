@@ -1,9 +1,11 @@
 <?php
 
+use app\models\Client;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use nterms\pagesize\PageSize;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 use app\models\site\Log;
 use kartik\date\DatePicker;
@@ -95,9 +97,43 @@ $pageSize = PageSize::widget([
                     ],
                 ],
                 [
+                    'attribute' => 'until',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        $until = !empty(@unserialize($model->until)) ? @unserialize($model->until) : $model->until;
+                        $result = '';
+                        if (!empty($until) && is_array($until)) {
+                            foreach ($until as $key => $value) {
+                                if (!in_array($key, Yii::$app->params['hideParams'])) {
+                                    if ($key == 'num') {
+                                        $client = Client::find()->where(['num' => $value])->one();
+                                        if ($client) {
+                                            $result = $result . "<b>" . $key . ":" .
+                                                Html::a(
+                                                    $value,
+                                                    Url::to(['client/view', 'id' => $client->id]),
+                                                    [
+                                                        'data-pjax' => 0
+                                                    ]
+                                                )
+                                                . "<br>";
+                                        } else {
+                                            $result = $result . "<b>" . $key . ":</b> " . $value . "<br>";
+                                        }
+                                    } else {
+                                        $result = $result . "<b>" . $key . ":</b> " . $value . "<br>";
+                                    }
+                                }
+                            }
+                        } else {
+                            $result = $until;
+                        }
+                        return $result;
+                    }
+                ],
+                [
                     'attribute' => 'after',
                     'format' => 'raw',
-                    'filter' => false,
                     'value' => function ($model) {
                         $after = !empty(@unserialize($model->after)) ? @unserialize($model->after) : $model->after;
                         $until = !empty(@unserialize($model->until)) ? @unserialize($model->until) : $model->until;
@@ -105,37 +141,30 @@ $pageSize = PageSize::widget([
                         if (!empty($after) && is_array($after)) {
                             foreach ($after as $key => $value) {
                                 if (!in_array($key, Yii::$app->params['hideParams'])) {
-                                    
-                                    if ( !empty($until) && $until[$key] != $value) {
-                                    
-                                        $result = $result . "<font color='red'><b>" . $key . ":</b> " . $value . "<br></font>";
+                                    if ($key == 'num') {
+                                        $client = Client::find()->where(['num' => $value])->one();
+                                        if ($client) {
+                                            $result = $result . "<b>" . $key . ":" .
+                                                Html::a(
+                                                    $value,
+                                                    Url::to(['client/view', 'id' => $client->id]),
+                                                    [
+                                                        'data-pjax' => 0
+                                                    ]
+                                                )
+                                                . "<br>";
+                                        }
                                     } else {
-                                        $result = $result . "<b>" . $key . ":</b> " . $value . "<br>";
+                                        if (!empty($until) && $until[$key] != $value) {
+                                            $result = $result . "<font color='red'><b>" . $key . ":</b> " . $value . "<br></font>";
+                                        } else {
+                                            $result = $result . "<b>" . $key . ":</b> " . $value . "<br>";
+                                        }
                                     }
-                                    
                                 }
                             }
                         } else {
                             $result = $after;
-                        }
-                        return $result;
-                    }
-                ],
-                [
-                    'attribute' => 'until',
-                    'format' => 'raw',
-                    'filter' => false,
-                    'value' => function ($model) {
-                        $until = !empty(@unserialize($model->until)) ? @unserialize($model->until) : $model->until;
-                        $result = '';
-                        if (!empty($until) && is_array($until)) {
-                            foreach ($until as $key => $value) {
-                                if (!in_array($key, Yii::$app->params['hideParams'])) {
-                                    $result = $result . "<b>" . $key . ":</b> " . $value . "<br>";
-                                }
-                            }
-                        } else {
-                            $result = $until;
                         }
                         return $result;
                     }
